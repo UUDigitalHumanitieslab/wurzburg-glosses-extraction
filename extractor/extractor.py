@@ -26,9 +26,10 @@ def extract_loci(s):
             column = prev_locus.column
 
         locus = Locus(page, column, number, subdivision, nr_occurrences)
+        loci.append(locus)
 
         prev_locus = locus
-        print n, match, locus
+        #print n, match, locus
 
     return loci
 
