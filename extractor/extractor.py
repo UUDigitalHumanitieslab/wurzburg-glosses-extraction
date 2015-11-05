@@ -3,7 +3,7 @@ import re
 
 from models import Noun, FormAnalysis, Form, Locus
 
-NOUN = re.compile(r'(.*)\s([nmf])\.\s(.*?)\.')
+NOUN = re.compile(r'(.*)\s([nmf])\.\s(.*?)[\.,]')
 FORM_ANALYSIS = re.compile(r'([NVAGD](?:sg|pl|du)).\s')
 FORM = re.compile(r'([^\W\d_]+)\s', re.U)
 LOCI = re.compile(r'(\d+)([a-d]?)(\d*)([a-d]?)(?:\s\((\w+)\))?')
