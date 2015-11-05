@@ -1,7 +1,6 @@
-class Noun:
-    def __init__(self, title, gender, stem, additional, definition):
-        self.title = title
-        self.gender = gender
+class PartOfSpeech(object):
+    def __init__(self, headword, stem, additional, definition):
+        self.headword = headword
         self.stem = stem
         self.additional = additional
         self.definition = definition
@@ -10,29 +9,52 @@ class Noun:
     def add_form_analyses(self, form_analyses):
         self.form_analyses.append(form_analyses)
 
+
+class Noun(PartOfSpeech):
+    """
+    In addition to a PartOfSpeech, a Noun has a gender.
+    """
+    def __init__(self, headword, gender, stem, additional, definition):
+        super(Noun, self).__init__(headword, stem, additional, definition)
+        self.gender = gender
+
     def __str__(self):
-        s = 'Noun: {}, gender: {}, stem: {}'.format(self.title, self.gender, self.stem)
+        s = 'Noun: {}, gender: {}, stem: {}'.format(self.headword, self.gender, self.stem)
         for form_analysis in self.form_analyses:
             s += '\n\t{}'.format(form_analysis)
         return s
 
 
-class FormAnalysis:
-    def __init__(self, label):
-        self.label = label
+class Adjective(PartOfSpeech):
+    pass
+
+
+class Verb(PartOfSpeech):
+    def __init__(self, headword, definition, voice, stem, person, relative, pronominal):
+        super(Noun, self).__init__(headword, stem, '', definition)
+        self.voice = voice
+        self.person = person
+        self.relative = relative
+        self.pronominal = pronominal
+
+
+class FormAnalysis(object):
+    def __init__(self, case, gender):
+        self.case = case
+        self.gender = gender
         self.forms = []
 
     def set_forms(self, forms):
         self.forms = forms
 
     def __str__(self):
-        s = 'FormAnalysis: {}'.format(self.label)
+        s = 'FormAnalysis: case: {}, gender: {}'.format(self.case, self.gender)
         for form in self.forms:
             s += '\n\t\t{}'.format(form)
         return s
 
 
-class Form:
+class Form(object):
     def __init__(self, form):
         self.form = form
         self.loci = []
@@ -47,7 +69,7 @@ class Form:
         return s
 
 
-class Locus:
+class Locus(object):
     OCCURRENCES_MAP = {'': 1, 'bis': 2, 'ter': 3, 'quatter': 4}
 
     def __init__(self, page, column, number, subdivision, nr_occurrences):

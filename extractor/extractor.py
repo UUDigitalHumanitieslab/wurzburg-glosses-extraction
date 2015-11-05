@@ -19,7 +19,7 @@ def create_noun(s):
         if n == 0:
             current_noun = extract_noun(match)
         elif n % 2 == 1:
-            current_form = FormAnalysis(match)
+            current_form = FormAnalysis(match, None)
             current_noun.add_form_analyses(current_form)
         else:
             current_form.set_forms(extract_forms(match))
@@ -32,10 +32,10 @@ def extract_noun(s):
     Extracts a single noun from a string s.
     """
     match = NOUN.match(s)
-    title = match.group(1)
+    headword = match.group(1)
     gender = match.group(2)
     stem = match.group(3)
-    return Noun(title, gender, stem, '', '')
+    return Noun(headword, gender, stem, '', '')
 
 
 def extract_forms(s):
