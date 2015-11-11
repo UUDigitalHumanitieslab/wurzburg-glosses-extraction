@@ -1,5 +1,5 @@
 class PartOfSpeech(object):
-    def __init__(self, headword, stem, additional, definition):
+    def __init__(self, headword, stem, additional, definition, **kwargs):
         self.headword = headword
         self.stem = stem
         self.additional = additional
@@ -9,12 +9,18 @@ class PartOfSpeech(object):
     def add_form_analyses(self, form_analyses):
         self.form_analyses.append(form_analyses)
 
+    def __str__(self):
+        s = 'POS: {}, stem: {}, add_info: {}, def: {}'.format(self.headword, self.stem, self.additional, self.definition)
+        for form_analysis in self.form_analyses:
+            s += '\n\t{}'.format(form_analysis)
+        return s
+
 
 class Noun(PartOfSpeech):
     """
     In addition to a PartOfSpeech, a Noun has a gender.
     """
-    def __init__(self, headword, gender, stem, additional, definition):
+    def __init__(self, headword, stem, additional, definition, gender):
         super(Noun, self).__init__(headword, stem, additional, definition)
         self.gender = gender
 

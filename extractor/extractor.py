@@ -1,38 +1,35 @@
 import codecs
-import re
 
-from models import Noun, FormAnalysis, Form, Locus
-
-NOUN = re.compile(r'(.*)\s([nmf])\.\s(.*?)[\.,]')
-NOUN_EXTRA_INFO = re.compile(r'(?:\((.*)\))?([^\(\)]*)\.')
-FORM_ANALYSIS = re.compile(r'([NVAGD](?:sg|pl|du)).\s')
-FORM = re.compile(r'([^\d,\.\s]+)\s', re.U)
-LOCI = re.compile(r'(\d+)([a-d]?)(\d*)([a-d]?)(?:\s\((\w+)\))?')
+from models import Noun, Adjective, FormAnalysis, Form, Locus
+from regexes import POS_DEFINITION, POS_EXTRA_INFO, FORM_ANALYSES, FORMS, LOCI
 
 
-def create_noun(s):
+def create_pos(s, cls):
     """
-    Creates a Noun from a string s. A Noun consists of one or more FormAnalyses.
+    Creates a PartOfSpeech (of given class cls) from a string s.
+    A PartOfSpeech consists of one or more FormAnalyses.
     """
-    current_noun = None
+    current_adj = None
     current_form = None
-    for n, match in enumerate(FORM_ANALYSIS.split(s)):
+    splits = FORM_ANALYSES.split(s)
+    for n, match in enumerate(splits):
         if n == 0:
-            current_noun = extract_noun(match)
-        elif n % 2 == 1:
-            current_form = FormAnalysis(match, None)
-            current_noun.add_form_analyses(current_form)
-        else:
+            current_adj = extract_pos(match, cls)
+            pass
+        elif n % 3 == 1:
+            current_form = FormAnalysis(splits[n], splits[n + 1])
+            current_adj.add_form_analyses(current_form)
+        elif n % 3 == 0:
             current_form.set_forms(extract_forms(match))
 
-    return current_noun
+    return current_adj
 
 
-def extract_noun(s):
+def extract_pos(s, cls):
     """
-    Extracts a single noun from a string s.
+    Extracts a noun definition from a string s.
     """
-    match = NOUN.match(s)
+    match = POS_DEFINITION.match(s)
     headword = match.group(1)
     gender = match.group(2)
     stem = match.group(3)
@@ -41,21 +38,21 @@ def extract_noun(s):
 
     unmatched = s[match.end():].strip()
     if unmatched:
-        match = NOUN_EXTRA_INFO.match(unmatched)
-        if NOUN_EXTRA_INFO.match(unmatched):
+        match = POS_EXTRA_INFO.match(unmatched)
+        if POS_EXTRA_INFO.match(unmatched):
             additional = match.group(1)
             definition = match.group(2)
 
-    return Noun(headword, gender, stem, additional, definition)
+    return cls(headword, stem, additional, definition, gender=gender)
 
 
 def extract_forms(s):
     """
-    Extracts all forms from a string s. A form consists of a definition and one or more Loci.
+    Extracts all Forms from a string s. A Form consists of a definition and one or more Loci.
     """
     forms = []
     current_form = None
-    for n, match in enumerate(FORM.split(s.decode('utf-8'))):
+    for n, match in enumerate(FORMS.split(s.decode('utf-8'))):
         if n == 0:
             pass  # first match is empty
         elif n % 2 == 1:
@@ -69,7 +66,10 @@ def extract_forms(s):
 
 def extract_loci(s):
     """
-    Extracts all loci from a string s.
+    Extracts all Loci from a string s.
+    A locus can appear in several forms, e.g.: 1a12, 11b6a, 12c13, 15d, 16.
+    In the last two cases, the Locus signifies only the number and subdivision,
+    the page and column need to be fetched from the preceding Locus.
     """
     loci = []
     prev_locus = None
@@ -90,16 +90,17 @@ def extract_loci(s):
         loci.append(locus)
 
         prev_locus = locus
-        #print n, match, locus
 
     return loci
 
 if __name__ == "__main__":
-    #with codecs.open('../data/test1.txt', 'rb') as in_file:
-    #    for line in in_file:
-    #        line = line.strip()
-    #        extract_loci(line)
-    with codecs.open('../data/dan.txt', 'rb') as in_file:
+    with codecs.open('../data/nouns.txt', 'rb') as in_file:
         for line in in_file:
             line = line.strip()
-            print create_noun(line)
+            pos = create_pos(line, Noun)
+            print pos
+    with codecs.open('../data/adjectives.txt', 'rb') as in_file:
+        for line in in_file:
+            line = line.strip()
+            pos = create_pos(line, Adjective)
+            print pos
