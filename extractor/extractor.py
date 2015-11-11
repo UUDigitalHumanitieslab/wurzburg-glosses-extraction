@@ -4,8 +4,9 @@ import re
 from models import Noun, FormAnalysis, Form, Locus
 
 NOUN = re.compile(r'(.*)\s([nmf])\.\s(.*?)[\.,]')
+NOUN_EXTRA_INFO = re.compile(r'(?:\((.*)\))?([^\(\)]*)\.')
 FORM_ANALYSIS = re.compile(r'([NVAGD](?:sg|pl|du)).\s')
-FORM = re.compile(r'([^\W\d_]+)\s', re.U)
+FORM = re.compile(r'([^\d,\.\s]+)\s', re.U)
 LOCI = re.compile(r'(\d+)([a-d]?)(\d*)([a-d]?)(?:\s\((\w+)\))?')
 
 
@@ -35,7 +36,17 @@ def extract_noun(s):
     headword = match.group(1)
     gender = match.group(2)
     stem = match.group(3)
-    return Noun(headword, gender, stem, '', '')
+    additional = None
+    definition = None
+
+    unmatched = s[match.end():].strip()
+    if unmatched:
+        match = NOUN_EXTRA_INFO.match(unmatched)
+        if NOUN_EXTRA_INFO.match(unmatched):
+            additional = match.group(1)
+            definition = match.group(2)
+
+    return Noun(headword, gender, stem, additional, definition)
 
 
 def extract_forms(s):

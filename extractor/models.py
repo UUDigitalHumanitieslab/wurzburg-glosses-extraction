@@ -19,7 +19,7 @@ class Noun(PartOfSpeech):
         self.gender = gender
 
     def __str__(self):
-        s = 'Noun: {}, gender: {}, stem: {}'.format(self.headword, self.gender, self.stem)
+        s = 'Noun: {}, gender: {}, stem: {}, add_info: {}, def: {}'.format(self.headword, self.gender, self.stem, self.additional, self.definition)
         for form_analysis in self.form_analyses:
             s += '\n\t{}'.format(form_analysis)
         return s
