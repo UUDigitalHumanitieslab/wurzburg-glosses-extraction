@@ -18,7 +18,7 @@ FORM_ANALYSES = re.compile(r"""
 """, re.X)
 
 FORMS = re.compile(r"""
-    ([^\d,\.\s]+)\s         # matches anything but a number, comma, dot or space, allowing unicode.
+    \s?([^\d,\.]+)\s        # matches anything but a number, comma or dot, allowing unicode.
 """, re.X + re.U)
 
 LOCI = re.compile(r"""
