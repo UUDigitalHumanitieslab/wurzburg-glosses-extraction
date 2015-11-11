@@ -1,7 +1,5 @@
-import codecs
-
-from models import Noun, Adjective, FormAnalysis, Form, Locus
-from regexes import POS_DEFINITION, POS_EXTRA_INFO, FORM_ANALYSES, FORMS, LOCI
+from .models import FormAnalysis, Form, Locus
+from .regexes import POS_DEFINITION, POS_EXTRA_INFO, FORM_ANALYSES, FORMS, LOCI
 
 
 def create_pos(s, cls):
@@ -92,15 +90,3 @@ def extract_loci(s):
         prev_locus = locus
 
     return loci
-
-if __name__ == "__main__":
-    with codecs.open('../data/nouns.txt', 'rb') as in_file:
-        for line in in_file:
-            line = line.strip()
-            pos = create_pos(line, Noun)
-            print pos
-    with codecs.open('../data/adjectives.txt', 'rb') as in_file:
-        for line in in_file:
-            line = line.strip()
-            pos = create_pos(line, Adjective)
-            print pos
