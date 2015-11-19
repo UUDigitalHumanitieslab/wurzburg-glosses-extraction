@@ -1,16 +1,21 @@
 class PartOfSpeech(object):
-    def __init__(self, headword, stem, additional, definition, **kwargs):
+    def __init__(self, headword, additional, definition, **kwargs):
         self.headword = headword
-        self.stem = stem
         self.additional = additional.strip() if additional else None
         self.definition = definition.strip() if definition else None
         self.form_analyses = []
+        self.common_stem = kwargs.get('common_stem', None)
+        self.common_gender = kwargs.get('common_gender', None)
 
     def add_form_analyses(self, form_analyses):
+        if self.common_stem:
+            form_analyses.stem = self.common_stem
+        if self.common_gender:
+            form_analyses.gender = self.common_gender
         self.form_analyses.append(form_analyses)
 
     def __str__(self):
-        s = 'POS: {}, stem: {}, add_info: {}, def: {}'.format(self.headword, self.stem, self.additional, self.definition)
+        s = 'POS: {}, add_info: {}, def: {}'.format(self.headword, self.additional, self.definition)
         for form_analysis in self.form_analyses:
             s += '\n\t{}'.format(form_analysis)
         return s
@@ -18,32 +23,31 @@ class PartOfSpeech(object):
 
 class Noun(PartOfSpeech):
     """
-    In addition to a PartOfSpeech, a Noun has a common gender for all FormAnalyses.
+    In addition to a PartOfSpeech, a Noun has a common stem and gender for all FormAnalyses.
     """
-    def __init__(self, headword, stem, additional, definition, common_gender):
-        super(Noun, self).__init__(headword, stem, additional, definition)
-        self.common_gender = common_gender
-
-    def add_form_analyses(self, form_analyses):
-        form_analyses.gender = self.common_gender
-        super(Noun, self).add_form_analyses(form_analyses)
 
 
 class Adjective(PartOfSpeech):
-    pass
+    """
+    In addition to a PartOfSpeech, an Adjective has a common stem for all FormAnalyses.
+    """
 
 
 class Verb(PartOfSpeech):
-    def __init__(self, headword, definition, voice, stem, person, relative, pronominal):
-        super(Noun, self).__init__(headword, stem, '', definition)
-        self.voice = voice
+    """
+    def __init__(self, headword, definition, is_active, stem, person, relative, pronominal):
+        super(Verb, self).__init__(headword, '', definition)
+        self.stem = stem
+        self.is_active = is_active
         self.person = person
         self.relative = relative
         self.pronominal = pronominal
+    """
 
 
 class FormAnalysis(object):
     def __init__(self, case, gender):
+        self.stem = None
         self.case = case
         self.gender = gender
         self.forms = []
@@ -52,7 +56,7 @@ class FormAnalysis(object):
         self.forms = forms
 
     def __str__(self):
-        s = 'FormAnalysis: case: {}, gender: {}'.format(self.case, self.gender)
+        s = 'FormAnalysis: stem: {}, case: {}, gender: {}'.format(self.stem, self.case, self.gender)
         for form in self.forms:
             s += '\n\t\t{}'.format(form)
         return s

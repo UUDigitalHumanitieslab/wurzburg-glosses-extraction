@@ -32,3 +32,7 @@ LOCI = re.compile(r"""
     (?:\s\((\w+)\))?        # matches the nr_occurrences (optionally)
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)
+
+VERB_PERSON = re.compile(r'(.*?)[1-3](?:sg|pl)\.\s(.*)', re.X)
+VERB_VOICE = re.compile(r'(.*)(?:\sPass\.:\s)(.*)', re.X)
+VERB_PRONOMINAL_OBJECT = re.compile(r'(?:with)?\s(?:in|suf)fix\.\spron\.\s[1-3](?:sg|pl)\.\s(?:[nmf]\.\s)?', re.X)

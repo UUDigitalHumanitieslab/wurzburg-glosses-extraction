@@ -1,5 +1,5 @@
-from .models import FormAnalysis, Form, Locus
-from .regexes import POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
+from .models import Verb, FormAnalysis, Form, Locus
+from .regexes import POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI, VERB_PERSON, VERB_VOICE
 
 
 def create_pos(s, cls):
@@ -7,20 +7,43 @@ def create_pos(s, cls):
     Creates a PartOfSpeech (of given class cls) from a string s.
     A PartOfSpeech consists of one or more FormAnalyses.
     """
-    current_adj = None
+    pos = None
     current_form = None
     splits = FORM_ANALYSES.split(s)
     for n, match in enumerate(splits):
         if n == 0:
-            current_adj = extract_pos(match, cls)
+            pos = extract_pos(match, cls)
             pass
         elif n % 3 == 1:
             current_form = FormAnalysis(splits[n], splits[n + 1])
-            current_adj.add_form_analyses(current_form)
+            pos.add_form_analyses(current_form)
         elif n % 3 == 0:
             current_form.set_forms(extract_forms(match))
 
-    return current_adj
+    return pos
+
+
+def create_verb(s):
+    """
+    Creates a Verb from a string s.
+    """
+    match = VERB_PERSON.match(s)
+    prelim = match.group(1)
+    person = match.group(2)
+    other = match.group(3)
+    match = VERB_VOICE.match(prelim)
+    if match:
+        headword = match.group(1)
+        is_active = False
+        stem = match.group(2)
+    else:
+        is_active = True
+        headword = ''
+        stem = ''
+
+    print s
+    verb = Verb(headword, '', '')
+    print verb
 
 
 def extract_pos(s, cls):
@@ -29,8 +52,8 @@ def extract_pos(s, cls):
     """
     match = POS_ANALYSIS.match(s)
     headword = match.group(1)
-    common_gender = match.group(2)  # for Nouns
-    stem = match.group(3)
+    gender = match.group(2)  # for Nouns
+    stem = match.group(3)  # for both Adjectives and Nouns
     additional = None
     definition = None
 
@@ -41,7 +64,7 @@ def extract_pos(s, cls):
             additional = match.group(1)
             definition = match.group(2)
 
-    return cls(headword, stem, additional, definition, common_gender=common_gender)
+    return cls(headword, additional, definition, common_stem=stem, common_gender=gender)
 
 
 def extract_forms(s):

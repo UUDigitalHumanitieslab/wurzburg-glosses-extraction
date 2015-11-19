@@ -46,7 +46,7 @@ class TestExtractor(unittest.TestCase):
         s = 'dochumacht i, Difficult, impossible,\'hardly possible\'.'
         noun = extract_pos(s, Adjective)
         self.assertEqual(noun.headword, 'dochumacht')
-        self.assertEqual(noun.stem, 'i')
+        self.assertEqual(noun.common_stem, 'i')
         self.assertIsNone(noun.additional)
         self.assertEqual(noun.definition, 'Difficult, impossible,\'hardly possible\'')
 
@@ -56,15 +56,18 @@ class TestExtractor(unittest.TestCase):
         noun = create_pos(s, Noun)
         self.assertEqual(noun.headword, 'díabul')
         self.assertEqual(noun.common_gender, 'm')
-        self.assertEqual(noun.stem, 'o')
+        self.assertEqual(noun.common_stem, 'o')
         self.assertEqual(noun.additional, 'without the art.')
         self.assertEqual(noun.definition, 'The Devil, Satan')
 
         self.assertEqual(len(noun.form_analyses), 3)
+        self.assertEqual(noun.form_analyses[0].stem, 'o')
         self.assertEqual(noun.form_analyses[0].case, 'Nsg')
         self.assertEqual(noun.form_analyses[0].gender, 'm')
+        self.assertEqual(noun.form_analyses[1].stem, 'o')
         self.assertEqual(noun.form_analyses[1].case, 'Asg')
         self.assertEqual(noun.form_analyses[1].gender, 'm')
+        self.assertEqual(noun.form_analyses[2].stem, 'o')
         self.assertEqual(noun.form_analyses[2].case, 'Gsg')
         self.assertEqual(noun.form_analyses[2].gender, 'm')
 
