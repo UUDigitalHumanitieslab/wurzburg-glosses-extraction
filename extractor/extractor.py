@@ -77,6 +77,7 @@ def extract_loci(s):
         number = match[2]
         subdivision = match[3]
         nr_occurrences = match[4]
+        alternative = match[5]
 
         if not number:
             number = page
@@ -84,7 +85,7 @@ def extract_loci(s):
             page = prev_locus.page
             column = prev_locus.column
 
-        locus = Locus(page, column, number, subdivision, nr_occurrences)
+        locus = Locus(page, column, number, subdivision, nr_occurrences, alternative)
         loci.append(locus)
 
         prev_locus = locus

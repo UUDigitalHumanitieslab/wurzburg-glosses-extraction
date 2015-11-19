@@ -18,7 +18,10 @@ FORM_ANALYSES = re.compile(r"""
 """, re.X)
 
 FORMS = re.compile(r"""
-    \s?([^\d,\.]+)\s        # matches anything but a number, comma or dot, allowing unicode.
+    \s?                     # start with any whitespace (optionally)
+    ([^\d,=]+)              # matches anything but a number, comma or dot, allowing unicode.
+    (?![^\(]*\))            # requires the expression to not be between parentheses (negative lookahead)
+    \s                      # end with any whitespace
 """, re.X + re.U)
 
 LOCI = re.compile(r"""
@@ -27,4 +30,5 @@ LOCI = re.compile(r"""
     (\d*)                   # matches the number
     ([a-d]?)                # matches the subdivision (optionally)
     (?:\s\((\w+)\))?        # matches the nr_occurrences (optionally)
+    (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)

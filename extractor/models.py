@@ -78,12 +78,13 @@ class Form(object):
 class Locus(object):
     OCCURRENCES_MAP = {'': 1, 'bis': 2, 'ter': 3, 'quatter': 4}
 
-    def __init__(self, page, column, number, subdivision, nr_occurrences):
+    def __init__(self, page, column, number, subdivision, nr_occurrences, alternative):
         self.page = page
         self.column = column
         self.number = number
         self.subdivision = subdivision
         self.nr_occurrences = self.occurrences_to_int(nr_occurrences)
+        self.alternative = alternative
 
     def occurrences_to_int(self, nr_occurrences):
         if nr_occurrences in self.OCCURRENCES_MAP:
@@ -92,4 +93,4 @@ class Locus(object):
             raise ValueError('Unknown number of occurrences: {}'.format(nr_occurrences))
 
     def __str__(self):
-        return 'Locus: page: {}, column: {}, number: {}, subdivision: {}, nr_occurrences: {}'.format(self.page, self.column, self.number, self.subdivision, self.nr_occurrences)
+        return 'Locus: page: {}, column: {}, number: {}, subdivision: {}, nr_occurrences: {}, alternative: {}'.format(self.page, self.column, self.number, self.subdivision, self.nr_occurrences, self.alternative)
