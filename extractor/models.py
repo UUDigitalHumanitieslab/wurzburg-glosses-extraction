@@ -2,8 +2,8 @@ class PartOfSpeech(object):
     def __init__(self, headword, stem, additional, definition, **kwargs):
         self.headword = headword
         self.stem = stem
-        self.additional = additional
-        self.definition = definition
+        self.additional = additional.strip() if additional else None
+        self.definition = definition.strip() if definition else None
         self.form_analyses = []
 
     def add_form_analyses(self, form_analyses):
@@ -78,7 +78,7 @@ class Form(object):
 class Locus(object):
     OCCURRENCES_MAP = {'': 1, 'bis': 2, 'ter': 3, 'quatter': 4}
 
-    def __init__(self, page, column, number, subdivision, nr_occurrences, alternative):
+    def __init__(self, page, column, number, subdivision='', nr_occurrences='', alternative=''):
         self.page = page
         self.column = column
         self.number = number
