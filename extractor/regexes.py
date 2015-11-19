@@ -1,13 +1,13 @@
 import re
 
-POS_DEFINITION = re.compile(r"""
+POS_ANALYSIS = re.compile(r"""
     ([^\.,]*)               # matches anything but a space or dot, the headword
     \s(?:([nmf])\.\s)?      # matches the gender (optionally)
     ([^\.,]*)               # matches anything but a space or dot, the stem class
     [\.,]                   # matches the end of the definition
 """, re.X)
 
-POS_EXTRA_INFO = re.compile(r"""
+POS_DEFINITION = re.compile(r"""
     (?:\((.*)\))            # matches the additional info between brackets (optionally)
     ?([^\(\)]*)\.           # matches the definition, not between brackets
 """, re.X)

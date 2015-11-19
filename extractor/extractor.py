@@ -1,5 +1,5 @@
 from .models import FormAnalysis, Form, Locus
-from .regexes import POS_DEFINITION, POS_EXTRA_INFO, FORM_ANALYSES, FORMS, LOCI
+from .regexes import POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
 
 
 def create_pos(s, cls):
@@ -25,23 +25,23 @@ def create_pos(s, cls):
 
 def extract_pos(s, cls):
     """
-    Extracts a noun definition from a string s.
+    Extracts a PartOfSpeech definition from a string s.
     """
-    match = POS_DEFINITION.match(s)
+    match = POS_ANALYSIS.match(s)
     headword = match.group(1)
-    gender = match.group(2)
+    common_gender = match.group(2)  # for Nouns
     stem = match.group(3)
     additional = None
     definition = None
 
     unmatched = s[match.end():].strip()
     if unmatched:
-        match = POS_EXTRA_INFO.match(unmatched)
-        if POS_EXTRA_INFO.match(unmatched):
+        match = POS_DEFINITION.match(unmatched)
+        if POS_DEFINITION.match(unmatched):
             additional = match.group(1)
             definition = match.group(2)
 
-    return cls(headword, stem, additional, definition, common_gender=gender)
+    return cls(headword, stem, additional, definition, common_gender=common_gender)
 
 
 def extract_forms(s):
