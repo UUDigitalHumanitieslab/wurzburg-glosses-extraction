@@ -18,17 +18,15 @@ class PartOfSpeech(object):
 
 class Noun(PartOfSpeech):
     """
-    In addition to a PartOfSpeech, a Noun has a gender.
+    In addition to a PartOfSpeech, a Noun has a common gender for all FormAnalyses.
     """
-    def __init__(self, headword, stem, additional, definition, gender):
+    def __init__(self, headword, stem, additional, definition, common_gender):
         super(Noun, self).__init__(headword, stem, additional, definition)
-        self.gender = gender
+        self.common_gender = common_gender
 
-    def __str__(self):
-        s = 'Noun: {}, gender: {}, stem: {}, add_info: {}, def: {}'.format(self.headword, self.gender, self.stem, self.additional, self.definition)
-        for form_analysis in self.form_analyses:
-            s += '\n\t{}'.format(form_analysis)
-        return s
+    def add_form_analyses(self, form_analyses):
+        form_analyses.gender = self.common_gender
+        super(Noun, self).add_form_analyses(form_analyses)
 
 
 class Adjective(PartOfSpeech):

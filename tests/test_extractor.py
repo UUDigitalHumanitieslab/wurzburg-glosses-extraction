@@ -55,15 +55,18 @@ class TestExtractor(unittest.TestCase):
             '29b19, Asg. diabul 23d8, 26a23, 28b30, diabol 22d11, Gsg. diabuil 3b11.'
         noun = create_pos(s, Noun)
         self.assertEqual(noun.headword, 'díabul')
-        self.assertEqual(noun.gender, 'm')
+        self.assertEqual(noun.common_gender, 'm')
         self.assertEqual(noun.stem, 'o')
         self.assertEqual(noun.additional, 'without the art.')
         self.assertEqual(noun.definition, 'The Devil, Satan')
 
         self.assertEqual(len(noun.form_analyses), 3)
         self.assertEqual(noun.form_analyses[0].case, 'Nsg')
+        self.assertEqual(noun.form_analyses[0].gender, 'm')
         self.assertEqual(noun.form_analyses[1].case, 'Asg')
+        self.assertEqual(noun.form_analyses[1].gender, 'm')
         self.assertEqual(noun.form_analyses[2].case, 'Gsg')
+        self.assertEqual(noun.form_analyses[2].gender, 'm')
 
         self.assertEqual(len(noun.form_analyses[1].forms), 2)
         self.assertEqual(noun.form_analyses[1].forms[1].form, 'diabol')
