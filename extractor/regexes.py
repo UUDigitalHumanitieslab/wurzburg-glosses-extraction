@@ -33,6 +33,16 @@ LOCI = re.compile(r"""
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)
 
-VERB_PERSON = re.compile(r'(.*?)[1-3](?:sg|pl)\.\s(.*)', re.X)
-VERB_VOICE = re.compile(r'(.*)(?:\sPass\.:\s)(.*)', re.X)
-VERB_PRONOMINAL_OBJECT = re.compile(r'(?:with)?\s(?:in|suf)fix\.\spron\.\s[1-3](?:sg|pl)\.\s(?:[nmf]\.\s)?', re.X)
+VERB_PERSON = re.compile(r'\s*([1-3](?:sg|pl))\.\s(.*)', re.X)
+VERB_VOICE = re.compile(r'(.*)(?:\s?Pass\.:\s?)', re.X)
+VERB_PRONOMINAL_OBJECT = re.compile(r"""
+    ([^,]*?)                # matches anything but a comma (lazy)
+    ((?:with)?\s            # matches "with" (optionally)
+    (?:in|suf)fix\.\s       # matches infix/suffix
+    pron\.\s                # matches "pron."
+    [1-3](?:sg|pl)\.\s      # matches person and number
+    (?:[nmf]\.\s)?)         # matches gender (optionally)
+""", re.X)
+VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.', 
+    'Past Subj.', 'Pret.', 'Perf.', 'Perfect. Pres. Subj.', 'Perfect. Past Subj.', 'Imperat.']
+VERB_ADDITIONAL_STEM = re.compile(r'\s*(\(.*?\))')

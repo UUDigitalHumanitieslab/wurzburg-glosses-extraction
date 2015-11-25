@@ -1,5 +1,5 @@
-from .models import Verb, FormAnalysis, Form, Locus
-from .regexes import POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI, VERB_PERSON, VERB_VOICE
+from .models import FormAnalysis, Form, Locus
+from .regexes import POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
 
 
 def create_pos(s, cls):
@@ -8,42 +8,19 @@ def create_pos(s, cls):
     A PartOfSpeech consists of one or more FormAnalyses.
     """
     pos = None
-    current_form = None
+    current_form_analysis = None
     splits = FORM_ANALYSES.split(s)
     for n, match in enumerate(splits):
         if n == 0:
             pos = extract_pos(match, cls)
             pass
         elif n % 3 == 1:
-            current_form = FormAnalysis(splits[n], splits[n + 1])
-            pos.add_form_analyses(current_form)
+            current_form_analysis = FormAnalysis(None, splits[n], splits[n + 1])
+            pos.add_form_analysis(current_form_analysis)
         elif n % 3 == 0:
-            current_form.set_forms(extract_forms(match))
+            current_form_analysis.set_forms(extract_forms(match))
 
     return pos
-
-
-def create_verb(s):
-    """
-    Creates a Verb from a string s.
-    """
-    match = VERB_PERSON.match(s)
-    prelim = match.group(1)
-    person = match.group(2)
-    other = match.group(3)
-    match = VERB_VOICE.match(prelim)
-    if match:
-        headword = match.group(1)
-        is_active = False
-        stem = match.group(2)
-    else:
-        is_active = True
-        headword = ''
-        stem = ''
-
-    print s
-    verb = Verb(headword, '', '')
-    print verb
 
 
 def extract_pos(s, cls):
@@ -103,10 +80,13 @@ def extract_loci(s):
         alternative = match[5]
 
         if not number:
-            number = page
-            subdivision = column
-            page = prev_locus.page
-            column = prev_locus.column
+            if prev_locus:
+                number = page
+                subdivision = column
+                page = prev_locus.page
+                column = prev_locus.column
+            else:
+                raise ValueError('Incorrect loci description: ' + s)
 
         locus = Locus(page, column, number, subdivision, nr_occurrences, alternative)
         loci.append(locus)

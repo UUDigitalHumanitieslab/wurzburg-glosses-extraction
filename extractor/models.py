@@ -7,12 +7,15 @@ class PartOfSpeech(object):
         self.common_stem = kwargs.get('common_stem', None)
         self.common_gender = kwargs.get('common_gender', None)
 
-    def add_form_analyses(self, form_analyses):
+    def add_form_analysis(self, form_analysis):
+        """
+        Adds a FormAnalysis, sets the common stem or gender.
+        """
         if self.common_stem:
             form_analyses.stem = self.common_stem
         if self.common_gender:
             form_analyses.gender = self.common_gender
-        self.form_analyses.append(form_analyses)
+        self.form_analyses.append(form_analysis)
 
     def __str__(self):
         s = 'POS: {}, add_info: {}, def: {}'.format(self.headword, self.additional, self.definition)
@@ -35,28 +38,32 @@ class Adjective(PartOfSpeech):
 
 class Verb(PartOfSpeech):
     """
-    def __init__(self, headword, definition, is_active, stem, person, relative, pronominal):
-        super(Verb, self).__init__(headword, '', definition)
-        self.stem = stem
-        self.is_active = is_active
-        self.person = person
-        self.relative = relative
-        self.pronominal = pronominal
+    A Verb does not contain any additional information, just a headword and a definition.
     """
+    def __init__(self, headword, definition):
+        super(Verb, self).__init__(headword, '', definition)
 
 
 class FormAnalysis(object):
-    def __init__(self, case, gender):
-        self.stem = None
+    def __init__(self, stem, case, gender, **kwargs):
+        self.stem = stem
         self.case = case
         self.gender = gender
+
+        self.is_active = kwargs.get('is_active', None)
+        self.person = kwargs.get('person', None)
+        self.relative = kwargs.get('relative', None)
+        self.pronominal_object = kwargs.get('pronominal_object', None)
+
         self.forms = []
 
     def set_forms(self, forms):
         self.forms = forms
 
     def __str__(self):
-        s = 'FormAnalysis: stem: {}, case: {}, gender: {}'.format(self.stem, self.case, self.gender)
+        s = 'FormAnalysis: stem: {}, case: {}, gender: {}, \
+is_active: {}, person: {}, relative: {}, po: {}'.format(self.stem, 
+self.case, self.gender, self.is_active, self.person, self.relative, self.pronominal_object)
         for form in self.forms:
             s += '\n\t\t{}'.format(form)
         return s
