@@ -37,14 +37,22 @@ VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.'
                      'Past Subj.', 'Pret.', 'Perf.', 'Perfect. Pres. Subj.',
                      'Perfect. Past Subj.', 'Imperat.']
 
-VERB_ADDITIONAL_STEM = re.compile(r'\s*(\(.*?\))')
+VERB_ADDITIONAL_STEM = re.compile(r"""
+    (\(.*?\))               # matches anything between brackets (lazily)
+""", re.X)
 
-VERB_PERSON = re.compile(r'\s*([1-3](?:sg|pl)\.)', re.X)
+VERB_PERSON = re.compile(r"""
+    ([1-3](?:sg|pl)\.)      # matches the person
+""", re.X)
 
-VERB_VOICE = re.compile(r'(.*)(?:\s?Pass\.:\s?)', re.X)
+VERB_VOICE = re.compile(r"""
+    (.*)                    # matches anything
+    (?:\s?Pass\.:\s?)       # matches 'Pass.:' (optionally)
+""", re.X)
 
 VERB_RELATIVE = re.compile(r"""
-    ([^,]*rel\.(?:\sn)?)     # matches 'rel.', possibly followed by ' n'
+    ([^,]*                  # matches anything but a comma
+    rel\.(?:\sn)?)          # matches 'rel.', possibly followed by ' n'
 """, re.X)
 
 VERB_PRONOMINAL_OBJECT = re.compile(r"""

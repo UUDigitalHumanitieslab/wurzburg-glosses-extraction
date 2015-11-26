@@ -12,8 +12,9 @@ def create_verb(s):
         for j, f in enumerate(fa.split(', ')):        # Forms are separated by a comma
             if i == 0 and j == 0:
                 current_verb = find_verb(f)
-            current_form_analysis = create_form_analysis(f, current_form_analysis)
-            current_verb.add_form_analysis(current_form_analysis)
+            current_form_analysis, is_new = create_form_analysis(f, current_form_analysis)
+            if is_new:
+                current_verb.add_form_analysis(current_form_analysis)
     return current_verb
 
 
@@ -22,7 +23,7 @@ def find_verb(s):
 
     # If we find a stem class, check whether there is a passive annotation
     if stem:
-        headword, is_active = find_voice(pre_stem)
+        headword, _ = match_voice(pre_stem)
         verb = Verb(headword, '')
         return verb
     else:
@@ -33,47 +34,57 @@ def create_form_analysis(s, current_form_analysis=None):
     """
     Creates or appends a FormAnalysis from a string s, recursively.
     """
-    stem, pre_stem, post_stem = find_stem_class(s)
+    is_new = False
 
-    # If we find a stem class, check whether there is a passive annotation
+    stem, pre_stem, post_stem = find_stem_class(s)
     if stem:
-        _, is_active = find_voice(pre_stem)
+        # If we're starting off, check whether there is a passive annotation
+        if not current_form_analysis:
+            _, is_active = match_voice(pre_stem)
+        # Otherwise, retrieve the voice from the current FormAnalysis
+        else:
+            is_active = current_form_analysis.is_active
 
         # Start a new FormAnalysis when we find a stem class
         current_form_analysis = FormAnalysis(stem, None, None, is_active=is_active)
+        is_new = True
+    elif not current_form_analysis:
+        raise ValueError('No stem class found in: ' + s)
 
-    person, post_person = find_regex(post_stem, VERB_PERSON)
-
-    # If person was set, this starts a new FormAnalysis
-    if current_form_analysis.person:
-        current_form_analysis = copy.deepcopy(current_form_analysis)
-        current_form_analysis.set_forms([])
-
+    person, post_person = match_regex(post_stem, VERB_PERSON)
     if person:
+        # Create a new FormAnalysis if this is not already a fresh instance.
+        if not is_new:
+            current_form_analysis = copy.deepcopy(current_form_analysis)
+            current_form_analysis.set_forms([])
+            current_form_analysis.relative = None
+            current_form_analysis.pronominal_object = None
+            is_new = True
         current_form_analysis.person = person
 
-    relative, post_relative = find_regex(post_person, VERB_RELATIVE)
-
-    # If relative was set, this starts a new FormAnalysis
-    if current_form_analysis.relative:
-        current_form_analysis = copy.deepcopy(current_form_analysis)
-        current_form_analysis.set_forms([])
-
+    relative, post_relative = match_regex(post_person, VERB_RELATIVE)
     if relative:
+        # Create a new FormAnalysis if this is not already a fresh instance.
+        if not is_new:
+            current_form_analysis = copy.deepcopy(current_form_analysis)
+            current_form_analysis.set_forms([])
+            current_form_analysis.pronominal_object = None
+            is_new = True
         current_form_analysis.relative = relative
 
-    pronominal_object, post_po = find_regex(post_relative, VERB_PRONOMINAL_OBJECT)
-
-    # If pronominal object was set, this starts a new FormAnalysis
-    if current_form_analysis.pronominal_object:
-        current_form_analysis = copy.deepcopy(current_form_analysis)
-        current_form_analysis.set_forms([])
-
+    pronominal_object, post_po = match_regex(post_relative, VERB_PRONOMINAL_OBJECT)
     if pronominal_object:
+        # Create a new FormAnalysis if this is not already a fresh instance.
+        if not is_new:
+            current_form_analysis = copy.deepcopy(current_form_analysis)
+            current_form_analysis.set_forms([])
+            # TODO: relative should not be emptied when po is preceded by 'and'.
+            current_form_analysis.relative = None
+            is_new = True
         current_form_analysis.pronominal_object = pronominal_object
 
     current_form_analysis.append_form(extract_forms(post_po)[0])
-    return current_form_analysis
+    return current_form_analysis, is_new
 
 
 def find_stem_class(s):
@@ -88,21 +99,24 @@ def find_stem_class(s):
             stem = stem_class
             index = found
 
+    # If we didn't find any stem class, return the complete string.
     if index == len(s):
         return None, None, s
 
+    # Set the pre and post stem variables
     pre_stem = s[:index]
-    post_stem = s[index + len(stem):]
+    post_stem = s[index + len(stem):].lstrip()
 
+    # Check whether there is additional information on the stem in the post_stem.
     match = VERB_ADDITIONAL_STEM.match(post_stem)
     if match:
         stem += ' ' + match.group(1)
-        post_stem = post_stem[match.end(1):]
+        post_stem = post_stem[match.end(1):].lstrip()
 
     return stem, pre_stem, post_stem
 
 
-def find_voice(s):
+def match_voice(s):
     """
     Matches the voice of the string and splits the headword off the front.
     """
@@ -117,9 +131,10 @@ def find_voice(s):
     return headword.strip(), is_active
 
 
-def find_regex(s, regex):
+def match_regex(s, regex):
     """
-    Matches the given regex in a string s, and returns the match and the remainder.
+    Matches the given regex in a string s, and returns the match and the remainder, lstripped.
+    If no match is found, the complete string s is returned.
     """
     match = regex.match(s)
     if match:
