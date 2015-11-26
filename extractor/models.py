@@ -12,9 +12,9 @@ class PartOfSpeech(object):
         Adds a FormAnalysis, sets the common stem or gender.
         """
         if self.common_stem:
-            form_analyses.stem = self.common_stem
+            form_analysis.stem = self.common_stem
         if self.common_gender:
-            form_analyses.gender = self.common_gender
+            form_analysis.gender = self.common_gender
         self.form_analyses.append(form_analysis)
 
     def __str__(self):
