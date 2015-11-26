@@ -60,10 +60,14 @@ class FormAnalysis(object):
     def set_forms(self, forms):
         self.forms = forms
 
+    def append_form(self, form):
+        self.forms.append(form)
+
     def __str__(self):
-        s = 'FormAnalysis: stem: {}, case: {}, gender: {}, \
-is_active: {}, person: {}, relative: {}, po: {}'.format(self.stem, 
-self.case, self.gender, self.is_active, self.person, self.relative, self.pronominal_object)
+        f = 'FormAnalysis: stem: {}, case: {}, gender: {}, \
+is_active: {}, person: {}, relative: {}, po: {}'
+        s = f.format(self.stem, self.case, self.gender, self.is_active,
+                     self.person, self.relative, self.pronominal_object)
         for form in self.forms:
             s += '\n\t\t{}'.format(form)
         return s

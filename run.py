@@ -20,12 +20,5 @@ if __name__ == "__main__":
     with codecs.open('data/verbs.txt', 'rb') as in_file:
         for line in in_file:
             line = line.strip()
-            #pos = create_verb(line)
-
-            verb = None
-            for n, l in enumerate(line.split('; ')):
-                if n == 0:
-                    verb = create_verb(l)
-                else:
-                    verb = create_verb(l, verb)
-            #print verb
+            verb = create_verb(line)
+            print verb
