@@ -104,7 +104,7 @@ def find_stem_class(s):
         return None, None, s
 
     # Set the pre and post stem variables
-    pre_stem = s[:index]
+    pre_stem = s[:index].rstrip()
     post_stem = s[index + len(stem):].lstrip()
 
     # Check whether there is additional information on the stem in the post_stem.

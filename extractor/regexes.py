@@ -59,6 +59,6 @@ VERB_PRONOMINAL_OBJECT = re.compile(r"""
     ((?:with)?\s            # matches "with" (optionally)
     (?:in|suf)fix\.\s       # matches infix/suffix
     pron\.\s                # matches "pron."
-    [1-3](?:sg|pl)\.\s      # matches person and number
-    (?:[nmf]\.\s)?)         # matches gender (optionally)
+    [1-3](?:sg|pl)\.        # matches person and number
+    (?:[nmf]\.)?)           # matches gender (optionally)
 """, re.X)
