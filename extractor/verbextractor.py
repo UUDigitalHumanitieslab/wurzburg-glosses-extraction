@@ -1,8 +1,9 @@
 import copy
 
-from .extractor import extract_forms
+from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT
+from .regexes import VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, \
+    VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, LOCI
 
 
 def create_verb(s):
@@ -83,7 +84,12 @@ def create_form_analysis(s, current_form_analysis=None):
             is_new = True
         current_form_analysis.pronominal_object = pronominal_object
 
-    current_form_analysis.append_form(extract_forms(post_po)[0])
+    if LOCI.match(post_po):
+        last_form = current_form_analysis.get_last_form()
+        prev_locus = last_form.get_last_locus()
+        last_form.append_locus(extract_loci(post_po, prev_locus)[0])
+    else:
+        current_form_analysis.append_form(extract_forms(post_po)[0])
     return current_form_analysis, is_new
 
 

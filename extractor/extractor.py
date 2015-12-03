@@ -62,7 +62,7 @@ def extract_forms(s):
     return forms
 
 
-def extract_loci(s):
+def extract_loci(s, prev_locus=None):
     """
     Extracts all Loci from a string s.
     A locus can appear in several forms, e.g.: 1a12, 11b6a, 12c13, 15d, 16.
@@ -70,7 +70,6 @@ def extract_loci(s):
     the page and column need to be fetched from the preceding Locus.
     """
     loci = []
-    prev_locus = None
     for n, match in enumerate(LOCI.findall(s)):
         page = match[0]
         column = match[1]

@@ -63,6 +63,9 @@ class FormAnalysis(object):
     def append_form(self, form):
         self.forms.append(form)
 
+    def get_last_form(self):
+        return self.forms[-1]
+
     def __str__(self):
         f = 'FormAnalysis: stem: {}, case: {}, gender: {}, \
 is_active: {}, person: {}, relative: {}, po: {}'
@@ -80,6 +83,14 @@ class Form(object):
 
     def set_loci(self, loci):
         self.loci = loci
+
+    def append_locus(self, locus):
+        self.loci.append(locus)
+
+    def get_last_locus(self):
+        if not self.loci:
+            return None
+        return self.loci[-1]
 
     def __str__(self):
         s = 'Form: {}'.format(self.form.encode('utf-8'))
