@@ -33,7 +33,7 @@ LOCI = re.compile(r"""
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)
 
-VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
+VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
                      'Past Subj.', 'Pret.', 'Perf.', 'Perfect. Pres. Subj.',
                      'Perfect. Past Subj.', 'Imperat.']
 

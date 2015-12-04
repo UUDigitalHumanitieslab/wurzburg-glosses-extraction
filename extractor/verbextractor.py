@@ -7,6 +7,12 @@ from .regexes import VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_
 
 
 def create_verb(s):
+    """
+    Creates a Verb from a string s.
+    First splits the active and passive voices, then splits every form.
+    TODO: only commas not between brackets (nacha taibred (MS nách taibred) 5d16 (KZ XXXV, 361, 413))
+    TODO: deal with commas before stem class (dlúmigid Masses together, nucleates. Pass. Perf. 3sg. with infix. pron. 1pl. and emph. pron. 1pl. rondlúmigedni 12a15.)
+    """
     current_verb = None
     for i, fa in enumerate(s.split('; ')):            # Active and passive FormAnalyses are split by a semi-colon
         current_form_analysis = None
@@ -113,23 +119,25 @@ def create_form_analysis(s, current_form_analysis=None):
 
 def find_stem_class(s):
     """
-    Finds the first occurrence of a verb stem class in a string.
+    Finds the first (and longest) occurrence of a verb stem class in a string s.
     """
     stem = None
-    index = len(s)
+    min_index = len(s)
+    max_length = 0
     for stem_class in VERB_STEM_CLASSES: 
         found = s.find(stem_class)
-        if found != -1 and found < index:
+        if found != -1 and found <= min_index and len(stem_class) > max_length:
             stem = stem_class
-            index = found
+            min_index = found
+            max_length = len(stem_class)
 
     # If we didn't find any stem class, return the complete string.
-    if index == len(s):
+    if min_index == len(s):
         return None, None, s
 
     # Set the pre and post stem variables
-    pre_stem = s[:index].rstrip()
-    post_stem = s[index + len(stem):].lstrip()
+    pre_stem = s[:min_index].rstrip()
+    post_stem = s[min_index + len(stem):].lstrip()
 
     # Check whether there is additional information on the stem in the post_stem.
     match = VERB_ADDITIONAL_STEM.match(post_stem)
@@ -142,7 +150,7 @@ def find_stem_class(s):
 
 def match_voice(s):
     """
-    Matches the voice of the string and splits the headword off the front.
+    Matches the voice of the string s and splits the headword off the front.
     """
     match = VERB_VOICE.match(s)
     if match:

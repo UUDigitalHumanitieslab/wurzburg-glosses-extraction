@@ -26,6 +26,12 @@ class TestVerbExtractor(unittest.TestCase):
         self.assertEqual(pre_stem, 'do-airbir Pass.:')
         self.assertEqual(post_stem, '3sg. with infix. pron. 1sg. nimtharberar 9c31')
 
+        s = 'Imperf. Ind. 3sg. doberthe 10d16'
+        stem, pre_stem, post_stem = find_stem_class(s)
+        self.assertEqual(stem, 'Imperf. Ind.')
+        self.assertEqual(pre_stem, '')
+        self.assertEqual(post_stem, '3sg. doberthe 10d16')
+
     def test_match_voice(self):
         s = 'do-airbir Pass.:'
         headword, is_active = match_voice(s)
