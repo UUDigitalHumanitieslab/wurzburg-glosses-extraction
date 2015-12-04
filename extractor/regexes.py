@@ -50,13 +50,20 @@ VERB_VOICE = re.compile(r"""
     (?:\s?Pass\.:?\s?)      # matches 'Pass.:' (optionally)
 """, re.X)
 
+VERB_CONJUNCTION = re.compile(r"""
+    (with\sconjn\.\s        # matches 'with conjn. '
+    (?:and\sneg\.\s)?)      # matches 'and neg. ' optionally
+""", re.X)
+
 VERB_RELATIVE = re.compile(r"""
     ([^,]*                  # matches anything but a comma
     rel\.(?:\sn)?)          # matches 'rel.', possibly followed by ' n'
 """, re.X)
 
 VERB_PRONOMINAL_OBJECT = re.compile(r"""
+    (?:and\s)?              # matches "and" (optionally)
     ((?:with\s)?            # matches "with" (optionally)
+    (?:elision\sof\s)?      # matches "elision of" (optionally)
     (?:in|suf)fix\.\s       # matches infix/suffix
     pron\.\s                # matches "pron."
     [1-3](?:sg|pl)\.        # matches person and number

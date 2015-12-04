@@ -2,7 +2,7 @@ import copy
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, \
+from .regexes import VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
     VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI
 
 
@@ -63,7 +63,9 @@ def create_form_analysis(s, current_form_analysis=None):
             is_new = True
         current_form_analysis.person = person
 
-    relative, post_relative = match_regex(post_person, VERB_RELATIVE)
+    conjunction, post_conjunction = match_regex(post_person, VERB_CONJUNCTION)
+
+    relative, post_relative = match_regex(post_conjunction, VERB_RELATIVE)
     if relative:
         # Create a new FormAnalysis if this is not already a fresh instance.
         if not is_new:
@@ -96,9 +98,16 @@ def create_form_analysis(s, current_form_analysis=None):
     if LOCI.match(post_ee):
         last_form = current_form_analysis.get_last_form()
         prev_locus = last_form.get_last_locus()
-        last_form.append_locus(extract_loci(post_ee, prev_locus)[0])
+        try:
+            last_form.append_locus(extract_loci(post_ee, prev_locus)[0])
+        except ValueError:
+            print 'Error extracting loci of: {}'.format(s)
     else:
-        current_form_analysis.append_form(extract_forms(post_ee)[0])
+        try:
+            current_form_analysis.append_form(extract_forms(post_ee)[0])
+        except ValueError, IndexError:
+            print 'Error extracting forms of: {}'.format(s)
+            print post_po
     return current_form_analysis, is_new
 
 
