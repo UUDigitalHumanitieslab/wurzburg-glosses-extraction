@@ -47,7 +47,7 @@ VERB_PERSON = re.compile(r"""
 
 VERB_VOICE = re.compile(r"""
     (.*)                    # matches anything
-    (?:\s?Pass\.:\s?)       # matches 'Pass.:' (optionally)
+    (?:\s?Pass\.:?\s?)      # matches 'Pass.:' (optionally)
 """, re.X)
 
 VERB_RELATIVE = re.compile(r"""
@@ -56,8 +56,17 @@ VERB_RELATIVE = re.compile(r"""
 """, re.X)
 
 VERB_PRONOMINAL_OBJECT = re.compile(r"""
-    ((?:with)?\s            # matches "with" (optionally)
+    ((?:with\s)?            # matches "with" (optionally)
     (?:in|suf)fix\.\s       # matches infix/suffix
+    pron\.\s                # matches "pron."
+    [1-3](?:sg|pl)\.        # matches person and number
+    (?:\s[nmf]\.)?)         # matches gender (optionally)
+""", re.X)
+
+VERB_EMPHATIC_ELEMENTS = re.compile(r"""
+    (?:and\s)?              # matches "and" (optionally)
+    ((?:with\s)?            # matches "with" (optionally)
+    emph\.\s                # matches "emph."
     pron\.\s                # matches "pron."
     [1-3](?:sg|pl)\.        # matches person and number
     (?:\s[nmf]\.)?)         # matches gender (optionally)

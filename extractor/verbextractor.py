@@ -3,7 +3,7 @@ import copy
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
 from .regexes import VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, \
-    VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, LOCI
+    VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI
 
 
 def create_verb(s):
@@ -84,12 +84,21 @@ def create_form_analysis(s, current_form_analysis=None):
             is_new = True
         current_form_analysis.pronominal_object = pronominal_object
 
-    if LOCI.match(post_po):
+    empathic_elements, post_ee = match_regex(post_po, VERB_EMPHATIC_ELEMENTS)
+    if empathic_elements:
+        # Create a new FormAnalysis if this is not already a fresh instance.
+        if not is_new:
+            current_form_analysis = copy.deepcopy(current_form_analysis)
+            current_form_analysis.set_forms([])
+            is_new = True
+        current_form_analysis.empathic_elements = empathic_elements
+
+    if LOCI.match(post_ee):
         last_form = current_form_analysis.get_last_form()
         prev_locus = last_form.get_last_locus()
-        last_form.append_locus(extract_loci(post_po, prev_locus)[0])
+        last_form.append_locus(extract_loci(post_ee, prev_locus)[0])
     else:
-        current_form_analysis.append_form(extract_forms(post_po)[0])
+        current_form_analysis.append_form(extract_forms(post_ee)[0])
     return current_form_analysis, is_new
 
 

@@ -54,6 +54,7 @@ class FormAnalysis(object):
         self.person = kwargs.get('person', None)
         self.relative = kwargs.get('relative', None)
         self.pronominal_object = kwargs.get('pronominal_object', None)
+        self.empathic_elements = kwargs.get('empathic_elements', None)
 
         self.forms = []
 
@@ -68,9 +69,10 @@ class FormAnalysis(object):
 
     def __str__(self):
         f = 'FormAnalysis: stem: {}, case: {}, gender: {}, \
-is_active: {}, person: {}, relative: {}, po: {}'
+is_active: {}, person: {}, relative: {}, po: {}, ee: {}'
         s = f.format(self.stem, self.case, self.gender, self.is_active,
-                     self.person, self.relative, self.pronominal_object)
+                     self.person, self.relative, self.pronominal_object, 
+                     self.empathic_elements)
         for form in self.forms:
             s += '\n\t\t{}'.format(form)
         return s
@@ -117,4 +119,4 @@ class Locus(object):
             raise ValueError('Unknown number of occurrences: {}'.format(nr_occurrences))
 
     def __str__(self):
-        return 'Locus: page: {}, column: {}, number: {}, subdivision: {}, nr_occurrences: {}, alternative: {}'.format(self.page, self.column, self.number, self.subdivision, self.nr_occurrences, self.alternative)
+        return 'Locus: {}{}{}{} ({}), a: {}'.format(self.page, self.column, self.number, self.subdivision, self.nr_occurrences, self.alternative)
