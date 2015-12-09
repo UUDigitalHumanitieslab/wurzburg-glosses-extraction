@@ -1,0 +1,19 @@
+{% block title %}Home{% endblock %}
+{% block header %}Home{% endblock %}
+{% set active_page = 'home' %}
+{% block content %}
+<p>
+    <em>webgloss</em> allows you to extract structural information from glosses.
+</p>
+<form method="post" class="pure-form pure-form-stacked">
+    <fieldset>
+        <div class="pure-g">
+            <div class="pure-u-1">
+                <label for="gloss">Gloss</label>
+                <input id="gloss" name="gloss" type="textarea">
+            </div>
+        </div>
+        <input type="submit" class="pure-button pure-button-primary" value="Start searching!"/>
+    </fieldset>
+</form>
+{% endblock %}
