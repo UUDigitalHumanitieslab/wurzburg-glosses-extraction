@@ -41,7 +41,7 @@ def extract_pos(s, cls):
             additional = match.group(1)
             definition = match.group(2)
 
-    return cls(headword, additional, definition, common_stem=stem, common_gender=gender)
+    return cls(headword, definition, additional=additional, common_stem=stem, common_gender=gender)
 
 
 def extract_forms(s):

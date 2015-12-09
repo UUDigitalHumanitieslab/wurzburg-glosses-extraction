@@ -1,11 +1,11 @@
 class PartOfSpeech(object):
-    def __init__(self, headword, additional, definition, **kwargs):
+    def __init__(self, headword, definition, **kwargs):
         self.headword = headword
-        self.additional = additional.strip() if additional else None
         self.definition = definition.strip() if definition else None
+        self.additional = None
+        self.common_stem = None
+        self.common_gender = None
         self.form_analyses = []
-        self.common_stem = kwargs.get('common_stem', None)
-        self.common_gender = kwargs.get('common_gender', None)
 
     def add_form_analysis(self, form_analysis):
         """
@@ -28,11 +28,32 @@ class Noun(PartOfSpeech):
     """
     In addition to a PartOfSpeech, a Noun has a common stem and gender for all FormAnalyses.
     """
+    def __init__(self, headword, definition, **kwargs):
+        super(Noun, self).__init__(headword, definition)
+        self.additional = kwargs.get('additional', None)
+        self.common_stem = kwargs.get('common_stem', None)
+        self.common_gender = kwargs.get('common_gender', None)
 
 
 class Adjective(PartOfSpeech):
     """
     In addition to a PartOfSpeech, an Adjective has a common stem for all FormAnalyses.
+    """
+    def __init__(self, headword, definition, **kwargs):
+        super(Adjective, self).__init__(headword, definition)
+        self.additional = kwargs.get('additional', None)
+        self.common_stem = kwargs.get('common_stem', None)
+
+
+class Adverb(PartOfSpeech):
+    """
+    An Adverb does not contain any additional information, just a headword and a definition.
+    """
+
+
+class Preposition(PartOfSpeech):
+    """
+    A Preposition does not contain any additional information, just a headword and a definition.
     """
 
 
@@ -40,8 +61,12 @@ class Verb(PartOfSpeech):
     """
     A Verb does not contain any additional information, just a headword and a definition.
     """
-    def __init__(self, headword, definition):
-        super(Verb, self).__init__(headword, '', definition)
+
+
+class DefiniteArticle(PartOfSpeech):
+    """
+    A DefiniteArticle does not contain any additional information, just a headword and a definition.
+    """
 
 
 class FormAnalysis(object):
@@ -50,11 +75,18 @@ class FormAnalysis(object):
         self.case = case
         self.gender = gender
 
-        self.is_active = kwargs.get('is_active', None)
+        # Shared
         self.person = kwargs.get('person', None)
+
+        # Only for Verbs
+        self.is_active = kwargs.get('is_active', None)
         self.relative = kwargs.get('relative', None)
         self.pronominal_object = kwargs.get('pronominal_object', None)
         self.empathic_elements = kwargs.get('empathic_elements', None)
+
+        # Only for Prepositions
+        self.classifier = kwargs.get('classifier', None)
+        self.number = kwargs.get('number', None)
 
         self.forms = []
 
