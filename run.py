@@ -20,5 +20,6 @@ if __name__ == "__main__":
     with codecs.open('data/verbs.txt', 'rb') as in_file:
         for line in in_file:
             line = line.strip()
+            line = line.replace('&amp;', '&')  # fix XML escapes
             verb = create_verb(line)
             print verb

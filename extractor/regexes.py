@@ -38,7 +38,7 @@ VERB_HEADWORD = re.compile(r"""
 """, re.X)
 
 VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
-                     'Past Subj.', 'Pret.', 'Perf.', 'Perfect. Pres. Subj.',
+                     'Past Subj.', 'Pret.', 'Perf.', 'Pret. & Perf.', 'Perfect. Pres. Subj.',
                      'Perfect. Past Subj.', 'Imperat.']
 
 VERB_ADDITIONAL_STEM = re.compile(r"""

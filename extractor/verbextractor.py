@@ -11,7 +11,8 @@ def create_verb(s):
     """
     Creates a Verb from a string s.
     First splits the active and passive voices, then splits every form.
-
+    TODO: deal with double forms ("or")
+    TODO: deal with "with cia and infix. pron. 3sg. n." (maybe allow for \w+\sand between "with" and "infix"?)
     """
     current_verb = None
     current_verb, post_verb = find_verb(s)
