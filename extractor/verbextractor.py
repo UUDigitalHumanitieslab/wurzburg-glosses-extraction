@@ -2,7 +2,7 @@ import copy
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import VERB_SPLIT, VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
+from .regexes import VERB_SPLIT, VERB_HEADWORD, VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
     VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI
 
 
@@ -28,9 +28,16 @@ def find_verb(s):
 
     # If we find a stem class, check whether there is a passive annotation
     if stem:
-        headword, _ = match_voice(pre_stem)
-        post_verb = s[len(headword):].lstrip()
-        verb = Verb(headword, '')
+        verb_string, _ = match_voice(pre_stem)
+        match = VERB_HEADWORD.match(verb_string)
+        if match: 
+            headword = match.group(1)
+            definition = match.group(2)
+        else:
+            headword = verb_string
+            definition = ''
+        verb = Verb(headword, definition)
+        post_verb = s[len(verb_string):].lstrip()
         return verb, post_verb
     else:
         raise ValueError('No stem class found, this is not a verb: ' + s)
@@ -68,6 +75,7 @@ def create_form_analysis(s, current_form_analysis=None):
             is_new = True
         current_form_analysis.person = person
 
+    # Match conjunction elements, but disregard
     conjunction, post_conjunction = match_regex(post_person, VERB_CONJUNCTION)
 
     relative, post_relative = match_regex(post_conjunction, VERB_RELATIVE)

@@ -34,7 +34,11 @@ LOCI = re.compile(r"""
 """, re.X)
 
 VERB_SPLIT = re.compile(r"""
-    ,\s(?![^\(]*\))           # requires the comma to not be between parentheses (negative lookahead)
+    ,\s(?![^\(]*\))         # requires the comma to not be between parentheses (negative lookahead)
+""", re.X)
+
+VERB_HEADWORD = re.compile(r"""
+    (.*)\s([A-Z].*)         # splits on a capital letter
 """, re.X)
 
 VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',

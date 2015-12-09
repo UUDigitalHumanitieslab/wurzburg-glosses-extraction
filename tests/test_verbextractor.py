@@ -2,7 +2,7 @@
 
 import unittest
 
-from extractor.verbextractor import find_stem_class, match_voice, match_regex, create_verb
+from extractor.verbextractor import find_verb, find_stem_class, match_voice, match_regex, create_verb
 from extractor.regexes import VERB_PERSON, VERB_RELATIVE, VERB_PRONOMINAL_OBJECT
 
 
@@ -55,11 +55,28 @@ class TestVerbExtractor(unittest.TestCase):
         self.assertEqual(relative, 'with rel. n')
         self.assertEqual(post_relative, 'donrograd 20d9')
 
+        s = 'with elision of rel. n donrograd 20d9'
+        relative, post_relative = match_regex(s, VERB_RELATIVE)
+        self.assertEqual(relative, 'with elision of rel. n')
+        self.assertEqual(post_relative, 'donrograd 20d9')
+
     def test_match_pronominal_object(self):
         s = 'with infix. pron. 1sg. nimtharberar 9c31'
         po, post_po = match_regex(s, VERB_PRONOMINAL_OBJECT)
         self.assertEqual(po, 'with infix. pron. 1sg.')
         self.assertEqual(post_po, 'nimtharberar 9c31')
+
+        s = 'with elision of infix. pron. 1sg. nimtharberar 9c31'
+        po, post_po = match_regex(s, VERB_PRONOMINAL_OBJECT)
+        self.assertEqual(po, 'with elision of infix. pron. 1sg.')
+        self.assertEqual(post_po, 'nimtharberar 9c31')
+
+    def test_extract_headword(self):
+        s = 'dlúmigid Masses together, nucleates. Pass. Perf. 3sg. rondlúmigedni 12a15.'
+        verb, post_verb = find_verb(s)
+        self.assertEqual(verb.headword, 'dlúmigid')
+        self.assertEqual(verb.definition, 'Masses together, nucleates.')
+        self.assertEqual(post_verb, 'Pass. Perf. 3sg. rondlúmigedni 12a15.')
 
     def test_create_verb(self):
         s = 'do-gair Perf. 3sg. dorogart 21d2, with infix. pron. 3pl. dodarogart 22c1; ' \
