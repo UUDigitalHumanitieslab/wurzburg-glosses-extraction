@@ -2,7 +2,7 @@ import copy
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
+from .regexes import VERB_SPLIT, VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
     VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI
 
 
@@ -10,15 +10,13 @@ def create_verb(s):
     """
     Creates a Verb from a string s.
     First splits the active and passive voices, then splits every form.
-    TODO: only commas not between brackets (nacha taibred (MS nách taibred) 5d16 (KZ XXXV, 361, 413))
-    TODO: deal with commas before stem class (dlúmigid Masses together, nucleates. Pass. Perf. 3sg. with infix. pron. 1pl. and emph. pron. 1pl. rondlúmigedni 12a15.)
+
     """
     current_verb = None
-    for i, fa in enumerate(s.split('; ')):            # Active and passive FormAnalyses are split by a semi-colon
+    current_verb, post_verb = find_verb(s)
+    for i, fa in enumerate(post_verb.split('; ')):      # Active and passive FormAnalyses are split by a semi-colon
         current_form_analysis = None
-        for j, f in enumerate(fa.split(', ')):        # Forms are separated by a comma
-            if i == 0 and j == 0:
-                current_verb = find_verb(f)
+        for j, f in enumerate(VERB_SPLIT.split(fa)):    # Forms are separated by a comma
             current_form_analysis, is_new = create_form_analysis(f, current_form_analysis)
             if is_new:
                 current_verb.add_form_analysis(current_form_analysis)
@@ -31,8 +29,9 @@ def find_verb(s):
     # If we find a stem class, check whether there is a passive annotation
     if stem:
         headword, _ = match_voice(pre_stem)
+        post_verb = s[len(headword):].lstrip()
         verb = Verb(headword, '')
-        return verb
+        return verb, post_verb
     else:
         raise ValueError('No stem class found, this is not a verb: ' + s)
 

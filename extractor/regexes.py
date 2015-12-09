@@ -33,6 +33,10 @@ LOCI = re.compile(r"""
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)
 
+VERB_SPLIT = re.compile(r"""
+    ,\s(?![^\(]*\))           # requires the comma to not be between parentheses (negative lookahead)
+""", re.X)
+
 VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
                      'Past Subj.', 'Pret.', 'Perf.', 'Perfect. Pres. Subj.',
                      'Perfect. Past Subj.', 'Imperat.']
