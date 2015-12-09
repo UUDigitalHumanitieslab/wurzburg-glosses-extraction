@@ -33,10 +33,6 @@ LOCI = re.compile(r"""
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)
 
-VERB_SPLIT = re.compile(r"""
-    ,\s(?![^\(]*\))         # requires the comma to not be between parentheses (negative lookahead)
-""", re.X)
-
 VERB_HEADWORD = re.compile(r"""
     (.*)\s([A-Z].*)         # splits on a capital letter
 """, re.X)
@@ -69,13 +65,13 @@ VERB_RELATIVE = re.compile(r"""
 """, re.X)
 
 VERB_PRONOMINAL_OBJECT = re.compile(r"""
-    (?:and\s)?              # matches "and" (optionally)
-    ((?:with\s)?            # matches "with" (optionally)
-    (?:elision\sof\s)?      # matches "elision of" (optionally)
-    (?:in|suf)fix\.\s       # matches infix/suffix
-    pron\.\s                # matches "pron."
-    [1-3](?:sg|pl)\.        # matches person and number
-    (?:\s[nmf]\.)?)         # matches gender (optionally)
+    (?:and\s)?                      # matches "and" (optionally)
+    ((?:with\s)?                    # matches "with" (optionally)
+    (?:elision\sof\s)?              # matches "elision of" (optionally)
+    (?:(?:in|suf)fix|anaph)\.\s     # matches "infix/suffix." or "anaph."
+    pron\.\s                        # matches "pron."
+    (?:[1-3](?:sg|pl)\.\s)?         # matches person and number (optionally)
+    (?:[nmf]\.)?)                   # matches gender (optionally)
 """, re.X)
 
 VERB_EMPHATIC_ELEMENTS = re.compile(r"""
@@ -83,6 +79,6 @@ VERB_EMPHATIC_ELEMENTS = re.compile(r"""
     ((?:with\s)?            # matches "with" (optionally)
     emph\.\s                # matches "emph."
     pron\.\s                # matches "pron."
-    [1-3](?:sg|pl)\.        # matches person and number
-    (?:\s[nmf]\.)?)         # matches gender (optionally)
+    [1-3](?:sg|pl)\.\s      # matches person and number
+    (?:[nmf]\.)?)           # matches gender (optionally)
 """, re.X)

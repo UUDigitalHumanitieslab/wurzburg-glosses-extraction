@@ -1,8 +1,9 @@
 import copy
+import re
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import VERB_SPLIT, VERB_HEADWORD, VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
+from .regexes import VERB_HEADWORD, VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
     VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI
 
 
@@ -14,9 +15,9 @@ def create_verb(s):
     """
     current_verb = None
     current_verb, post_verb = find_verb(s)
-    for i, fa in enumerate(post_verb.split('; ')):      # Active and passive FormAnalyses are split by a semi-colon
+    for i, fa in enumerate(split_by(post_verb, ';')):   # Active and passive FormAnalyses are split by a semi-colon
         current_form_analysis = None
-        for j, f in enumerate(VERB_SPLIT.split(fa)):    # Forms are separated by a comma
+        for j, f in enumerate(split_by(fa, ',')):       # Forms are separated by a comma
             current_form_analysis, is_new = create_form_analysis(f, current_form_analysis)
             if is_new:
                 current_verb.add_form_analysis(current_form_analysis)
@@ -114,13 +115,12 @@ def create_form_analysis(s, current_form_analysis=None):
         try:
             last_form.append_locus(extract_loci(post_ee, prev_locus)[0])
         except ValueError:
-            print 'Error extracting loci of: {}'.format(s)
+            print 'Error extracting loci of: {}'.format(post_ee)
     else:
         try:
             current_form_analysis.append_form(extract_forms(post_ee)[0])
         except ValueError, IndexError:
-            print 'Error extracting forms of: {}'.format(s)
-            print post_po
+            print 'Error extracting forms of: {}'.format(post_ee)
     return current_form_analysis, is_new
 
 
@@ -177,8 +177,11 @@ def match_regex(s, regex):
     """
     match = regex.match(s)
     if match:
-        matched_s = match.group(1)
+        matched_s = match.group(1).rstrip()
         post_match = s[match.end(1):].lstrip()
         return matched_s, post_match
     else:
         return None, s
+
+def split_by(s, split):
+    return re.split(split + '\s(?![^\(]*\))', s)
