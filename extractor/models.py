@@ -1,20 +1,22 @@
+from abc import ABCMeta
+
+
 class PartOfSpeech(object):
+    """
+    A PartOfSpeech is an abstract base class, so must be initiated.
+    """
+    __metaclass__ = ABCMeta
+
     def __init__(self, headword, definition, **kwargs):
         self.headword = headword
         self.definition = definition.strip() if definition else None
-        self.additional = None
-        self.common_stem = None
-        self.common_gender = None
+        self.additional = kwargs.get('additional', None)
         self.form_analyses = []
 
     def add_form_analysis(self, form_analysis):
         """
-        Adds a FormAnalysis, sets the common stem or gender.
+        Adds a FormAnalysis.
         """
-        if self.common_stem:
-            form_analysis.stem = self.common_stem
-        if self.common_gender:
-            form_analysis.gender = self.common_gender
         self.form_analyses.append(form_analysis)
 
     def __str__(self):
@@ -29,10 +31,19 @@ class Noun(PartOfSpeech):
     In addition to a PartOfSpeech, a Noun has a common stem and gender for all FormAnalyses.
     """
     def __init__(self, headword, definition, **kwargs):
-        super(Noun, self).__init__(headword, definition)
-        self.additional = kwargs.get('additional', None)
         self.common_stem = kwargs.get('common_stem', None)
         self.common_gender = kwargs.get('common_gender', None)
+        super(Noun, self).__init__(headword, definition, **kwargs)
+
+    def add_form_analysis(self, form_analysis):
+        """
+        Sets the common stem and gender before adding the FormAnalysis.
+        """
+        if self.common_stem:
+            form_analysis.stem = self.common_stem
+        if self.common_gender:
+            form_analysis.gender = self.common_gender
+        super(Noun, self).add_form_analysis(form_analysis)
 
 
 class Adjective(PartOfSpeech):
@@ -40,9 +51,16 @@ class Adjective(PartOfSpeech):
     In addition to a PartOfSpeech, an Adjective has a common stem for all FormAnalyses.
     """
     def __init__(self, headword, definition, **kwargs):
-        super(Adjective, self).__init__(headword, definition)
-        self.additional = kwargs.get('additional', None)
         self.common_stem = kwargs.get('common_stem', None)
+        super(Adjective, self).__init__(headword, definition, **kwargs)
+
+    def add_form_analysis(self, form_analysis):
+        """
+        Sets the common stem before adding the FormAnalysis.
+        """
+        if self.common_stem:
+            form_analysis.stem = self.common_stem
+        super(Adjective, self).add_form_analysis(form_analysis)
 
 
 class Adverb(PartOfSpeech):
@@ -70,23 +88,32 @@ class DefiniteArticle(PartOfSpeech):
 
 
 class FormAnalysis(object):
-    def __init__(self, stem, case, gender, **kwargs):
-        self.stem = stem
-        self.case = case
-        self.gender = gender
+    def __init__(self, part_of_speech, **kwargs):
+        """
+        Specifies per PartOfSpeech which fields should be declared
+        """
+        if isinstance(part_of_speech, Noun):
+            self.case = kwargs.get('case', None)
+            self.gender = kwargs.get('gender', None)
 
-        # Shared
-        self.person = kwargs.get('person', None)
+        if isinstance(part_of_speech, Adjective):
+            self.case = kwargs.get('case', None)
+            self.gender = kwargs.get('gender', None)
 
-        # Only for Verbs
-        self.is_active = kwargs.get('is_active', None)
-        self.relative = kwargs.get('relative', None)
-        self.pronominal_object = kwargs.get('pronominal_object', None)
-        self.empathic_elements = kwargs.get('empathic_elements', None)
+        if isinstance(part_of_speech, Verb):
+            self.is_active = kwargs.get('is_active', None)
+            self.stem = kwargs.get('stem', None)
+            self.person = kwargs.get('person', None)
+            self.relative = kwargs.get('relative', None)
+            self.pronominal_object = kwargs.get('pronominal_object', None)
+            self.empathic_elements = kwargs.get('empathic_elements', None)
 
-        # Only for Prepositions
-        self.classifier = kwargs.get('classifier', None)
-        self.number = kwargs.get('number', None)
+        if isinstance(part_of_speech, Preposition):
+            self.case = kwargs.get('case', None)
+            self.classifier = kwargs.get('classifier', None)
+            self.person = kwargs.get('person', None)
+            self.number = kwargs.get('number', None)
+            self.gender = kwargs.get('gender', None)
 
         self.forms = []
 
@@ -103,7 +130,7 @@ class FormAnalysis(object):
         f = 'FormAnalysis: stem: {}, case: {}, gender: {}, \
 is_active: {}, person: {}, relative: {}, po: {}, ee: {}'
         s = f.format(self.stem, self.case, self.gender, self.is_active,
-                     self.person, self.relative, self.pronominal_object, 
+                     self.person, self.relative, self.pronominal_object,
                      self.empathic_elements)
         for form in self.forms:
             s += '\n\t\t{}'.format(form)

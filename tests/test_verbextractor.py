@@ -76,7 +76,6 @@ class TestVerbExtractor(unittest.TestCase):
         self.assertEqual(po, 'with anaph. pron.')
         self.assertEqual(post_po, 'doecmallaside 9d5')
 
-
     def test_extract_headword(self):
         s = 'dlúmigid Masses together, nucleates. Pass. Perf. 3sg. rondlúmigedni 12a15.'
         verb, post_verb = find_verb(s)

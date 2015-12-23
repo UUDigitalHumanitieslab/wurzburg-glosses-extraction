@@ -15,7 +15,7 @@ def create_pos(s, cls):
             pos = extract_pos(match, cls)
             pass
         elif n % 3 == 1:
-            current_form_analysis = FormAnalysis(None, splits[n], splits[n + 1])
+            current_form_analysis = FormAnalysis(pos, case=splits[n], gender=splits[n + 1])
             pos.add_form_analysis(current_form_analysis)
         elif n % 3 == 0:
             current_form_analysis.set_forms(extract_forms(match))

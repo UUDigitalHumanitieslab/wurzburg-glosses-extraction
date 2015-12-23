@@ -19,7 +19,7 @@ def create_verb(s):
     for i, fa in enumerate(split_by(post_verb, ';')):   # Active and passive FormAnalyses are split by a semi-colon
         current_form_analysis = None
         for j, f in enumerate(split_by(fa, ',')):       # Forms are separated by a comma
-            current_form_analysis, is_new = create_form_analysis(f, current_form_analysis)
+            current_form_analysis, is_new = create_form_analysis(f, current_verb, current_form_analysis)
             if is_new:
                 current_verb.add_form_analysis(current_form_analysis)
     return current_verb
@@ -32,7 +32,7 @@ def find_verb(s):
     if stem:
         verb_string, _ = match_voice(pre_stem)
         match = VERB_HEADWORD.match(verb_string)
-        if match: 
+        if match:
             headword = match.group(1)
             definition = match.group(2)
         else:
@@ -45,7 +45,7 @@ def find_verb(s):
         raise ValueError('No stem class found, this is not a verb: ' + s)
 
 
-def create_form_analysis(s, current_form_analysis=None):
+def create_form_analysis(s, current_verb, current_form_analysis=None):
     """
     Creates or appends a FormAnalysis from a string s, recursively.
     """
@@ -61,7 +61,7 @@ def create_form_analysis(s, current_form_analysis=None):
             is_active = current_form_analysis.is_active
 
         # Start a new FormAnalysis when we find a stem class
-        current_form_analysis = FormAnalysis(stem, None, None, is_active=is_active)
+        current_form_analysis = FormAnalysis(current_verb, is_active=is_active, stem=stem)
         is_new = True
     elif not current_form_analysis:
         raise ValueError('No stem class found in: ' + s)
@@ -132,7 +132,7 @@ def find_stem_class(s):
     stem = None
     min_index = len(s)
     max_length = 0
-    for stem_class in VERB_STEM_CLASSES: 
+    for stem_class in VERB_STEM_CLASSES:
         found = s.find(stem_class)
         if found != -1 and found <= min_index and len(stem_class) > max_length:
             stem = stem_class
@@ -183,6 +183,7 @@ def match_regex(s, regex):
         return matched_s, post_match
     else:
         return None, s
+
 
 def split_by(s, split):
     return re.split(split + '\s(?![^\(]*\))', s)
