@@ -37,10 +37,6 @@ VERB_HEADWORD = re.compile(r"""
     (.*)\s([A-Z].*)         # splits on a capital letter
 """, re.X)
 
-VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
-                     'Past Subj.', 'Pret.', 'Perf.', 'Pret. & Perf.', 'Perfect. Pres. Subj.',
-                     'Perfect. Past Subj.', 'Imperat.']
-
 VERB_ADDITIONAL_STEM = re.compile(r"""
     (\(.*?\))               # matches anything between brackets (lazily)
 """, re.X)
@@ -82,3 +78,22 @@ VERB_EMPHATIC_ELEMENTS = re.compile(r"""
     [1-3](?:sg|pl)\.\s      # matches person and number
     (?:[nmf]\.)?)           # matches gender (optionally)
 """, re.X)
+
+PREP_PNG = re.compile(r"""
+    ([1-3])(sg|pl)\.\s      # matches person and number
+    ([nmf]\.)?              # matches gender (optionally)
+""", re.X)
+
+
+def match_regex(s, regex):
+    """
+    Matches the given regex in a string s, and returns the match and the remainder, lstripped.
+    If no match is found, the complete string s is returned.
+    """
+    match = regex.match(s)
+    if match:
+        matched_s = match.group(1).rstrip()
+        post_match = s[match.end(1):].lstrip()
+        return matched_s, post_match
+    else:
+        return None, s

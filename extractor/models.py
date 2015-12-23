@@ -71,8 +71,19 @@ class Adverb(PartOfSpeech):
 
 class Preposition(PartOfSpeech):
     """
-    A Preposition does not contain any additional information, just a headword and a definition.
+    In addition to a PartOfSpeech, a Preposition has a common case for all FormAnalyses.
     """
+    def __init__(self, headword, definition, **kwargs):
+        self.common_case = kwargs.get('common_case', None)
+        super(Preposition, self).__init__(headword, definition, **kwargs)
+
+    def add_form_analysis(self, form_analysis):
+        """
+        Sets the common case before adding the FormAnalysis.
+        """
+        if self.common_case:
+            form_analysis.case = self.common_case
+        super(Preposition, self).add_form_analysis(form_analysis)
 
 
 class Verb(PartOfSpeech):

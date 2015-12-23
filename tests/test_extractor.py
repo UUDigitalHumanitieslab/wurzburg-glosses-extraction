@@ -74,4 +74,3 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual(len(noun.form_analyses[1].forms), 2)
         self.assertEqual(noun.form_analyses[1].forms[1].form, 'diabol')
         self.assertEqual(str(noun.form_analyses[1].forms[0].loci[1]), str(Locus(26, 'a', 23)))
-

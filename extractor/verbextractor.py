@@ -3,8 +3,13 @@ import re
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import VERB_HEADWORD, VERB_STEM_CLASSES, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
-    VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI
+from .regexes import VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
+    VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI, match_regex
+
+
+VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
+                     'Past Subj.', 'Pret.', 'Perf.', 'Pret. & Perf.', 'Perfect. Pres. Subj.',
+                     'Perfect. Past Subj.', 'Imperat.']
 
 
 def create_verb(s):
@@ -169,20 +174,6 @@ def match_voice(s):
         is_active = True
 
     return headword.strip(), is_active
-
-
-def match_regex(s, regex):
-    """
-    Matches the given regex in a string s, and returns the match and the remainder, lstripped.
-    If no match is found, the complete string s is returned.
-    """
-    match = regex.match(s)
-    if match:
-        matched_s = match.group(1).rstrip()
-        post_match = s[match.end(1):].lstrip()
-        return matched_s, post_match
-    else:
-        return None, s
 
 
 def split_by(s, split):
