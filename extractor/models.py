@@ -126,6 +126,7 @@ class FormAnalysis(object):
             self.number = kwargs.get('number', None)
             self.gender = kwargs.get('gender', None)
 
+        self.parent = part_of_speech
         self.forms = []
 
     def set_forms(self, forms):
@@ -138,11 +139,17 @@ class FormAnalysis(object):
         return self.forms[-1]
 
     def __str__(self):
-        f = 'FormAnalysis: stem: {}, case: {}, gender: {}, \
-is_active: {}, person: {}, relative: {}, po: {}, ee: {}'
-        s = f.format(self.stem, self.case, self.gender, self.is_active,
-                     self.person, self.relative, self.pronominal_object,
-                     self.empathic_elements)
+        if isinstance(self.parent, Noun) or isinstance(self.parent, Adjective):
+            f = 'FormAnalysis: case: {c}, gender: {g}'
+            s = f.format(c=self.case, g=self.gender)
+        if isinstance(self.parent, Preposition):
+            f = 'FormAnalysis: case: {c}, classifier: {cl}, person: {p}, number: {n}, gender: {g}'
+            s = f.format(c=self.case, cl=self.classifier, p=self.person, n=self.number, g=self.gender)
+        if isinstance(self.parent, Verb):
+            f = 'FormAnalysis: stem: {s}, is_active: {v}, person: {p}, relative: {r}, po: {po}, ee: {ee}'
+            s = f.format(s=self.stem, v=self.is_active, p=self.person, r=self.relative,
+                         po=self.pronominal_object, ee=self.empathic_elements)
+
         for form in self.forms:
             s += '\n\t\t{}'.format(form)
         return s

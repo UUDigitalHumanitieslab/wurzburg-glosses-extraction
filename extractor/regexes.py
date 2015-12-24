@@ -79,6 +79,12 @@ VERB_EMPHATIC_ELEMENTS = re.compile(r"""
     (?:[nmf]\.)?)           # matches gender (optionally)
 """, re.X)
 
+PREP_CLASSIFIER = re.compile(r"""
+    [wW]ith\s               # matches "With" or "with"
+    ((?:suffix|emph)\.\s    # matches "suffix" or "emph"
+    pron\.)                 # matches "pron."
+""", re.X)
+
 PREP_PNG = re.compile(r"""
     ([1-3])(sg|pl)\.\s      # matches person and number
     ([nmf]\.)?              # matches gender (optionally)

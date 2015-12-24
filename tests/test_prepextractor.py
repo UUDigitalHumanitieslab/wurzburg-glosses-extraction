@@ -25,6 +25,39 @@ class TestPrepExtractor(unittest.TestCase):
 with emph. pron. 1pl. etrunni 12b12, 2pl. etruib 24c22, 27b18, 21 (bis), 3pl. etarru 7d10, 27d19, ettarru 33b18.'
         prep = Preposition('', '', common_case='acc')
         add_pron_form_analyses(s, prep)
+        self.assertEqual(len(prep.form_analyses), 5)
+        self.assertEqual(prep.form_analyses[0].case, 'acc')
+        self.assertEqual(prep.form_analyses[0].classifier, 'suffix. pron.')
+        self.assertEqual(prep.form_analyses[0].gender, 'm.')
+        self.assertEqual(prep.form_analyses[1].person, '1')
+        self.assertEqual(prep.form_analyses[1].number, 'pl')
+        self.assertEqual(prep.form_analyses[2].classifier, 'emph. pron.')
+        self.assertEqual(prep.form_analyses[2].person, '1')
+        self.assertEqual(prep.form_analyses[2].number, 'pl')
+        self.assertEqual(prep.form_analyses[3].person, '2')
+        self.assertEqual(prep.form_analyses[3].number, 'pl')
+        self.assertEqual(prep.form_analyses[4].person, '3')
+        self.assertEqual(prep.form_analyses[4].number, 'pl')
+        self.assertIsNone(prep.form_analyses[4].gender)
 
         s = 'With suffix. pron. 3sg. n. occo, occa, oca: occo 3c24, 4a26, 5a26, 6a14, 22, 6d3, \
 7c4, 8d15, occa: occa 3c25, 8a11, 9d22, 11b4, 24a20, 26d8, 18, 29d6, oca: oca 33d7.'
+        prep = Preposition('', '', common_case='acc')
+        add_pron_form_analyses(s, prep)
+        self.assertEqual(len(prep.form_analyses), 1)
+        self.assertEqual(prep.form_analyses[0].case, 'acc')
+        self.assertEqual(prep.form_analyses[0].classifier, 'suffix. pron.')
+        self.assertEqual(prep.form_analyses[0].person, '3')
+        self.assertEqual(prep.form_analyses[0].number, 'sg')
+        self.assertEqual(prep.form_analyses[0].gender, 'n.')
+        self.assertEqual(len(prep.form_analyses[0].forms[0].loci), 8)
+
+        s = 'With suffix. pron.s: 1sg. with emph. pron. 1sg. cuccumsa 7c7, 2sg. cucut 32a17, \
+25, 3sg. m. cuci 15c23, with emph. pron. 3sg. cucisom 9d14, f. cuicce 9d5, n. cucci \
+24c17, 25a27, cuci 19b8, 1pl. cucunn 21a3, 2pl. cuccuib 7b1, 9a23, cucuib 14c40, \
+32a27, with emph. pron. 2pl. cucuibsi 1a8, 14a8, 14, 17a11, 24b14, 26c2, cucuib si \
+24c17, 3pl. cuccu 5a3, 27c24, with emph. pron. 3pl. cuccusom 14d30.'
+        prep = Preposition('', '', common_case='acc')
+        add_pron_form_analyses(s, prep)
+        print prep
+
