@@ -1,11 +1,24 @@
 import re
 
 from .extractor import extract_forms
-from .models import FormAnalysis
+from .models import Preposition, FormAnalysis
 from .regexes import match_regex, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG
 
 SINGULAR = 'sg'
 ARTICLE_CLASSIFIER = 'def. art.'
+ACC_CASE = 'accus.'
+DAT_CASE = 'dat.'
+
+
+def create_preposition(s):
+    if 'accus.' in s or 'acc.' in s:
+        common_case = ACC_CASE
+    elif 'dat.' in s:
+        common_case = DAT_CASE
+
+    headword = 'test'
+
+    return Preposition(headword, '', common_case=common_case)
 
 
 def add_simple_forms(s, current_prep):
