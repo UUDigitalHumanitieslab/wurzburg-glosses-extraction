@@ -2,10 +2,21 @@ import re
 
 from .extractor import extract_forms
 from .models import FormAnalysis
-from .regexes import match_regex, PREP_CLASSIFIER, PREP_PNG
+from .regexes import match_regex, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG
 
 SINGULAR = 'sg'
 ARTICLE_CLASSIFIER = 'def. art.'
+
+
+def add_simple_forms(s, current_prep):
+    current_form_analysis = FormAnalysis(current_prep)
+    current_prep.add_form_analysis(current_form_analysis)
+
+    forms = []
+    for match in PREP_FORMS.findall(s):
+        forms.extend(extract_forms(match))
+
+    current_form_analysis.set_forms(forms)
 
 
 def add_article_form_analyses(s, current_prep):

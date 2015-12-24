@@ -3,17 +3,20 @@
 import unittest
 
 from extractor.models import Preposition, Locus
-from extractor.prepextractor import add_article_form_analyses, add_pron_form_analyses
+from extractor.prepextractor import add_simple_forms, add_article_form_analyses, add_pron_form_analyses
 
 
 class TestPrepExtractor(unittest.TestCase):
 
     def test_add_simple_form_analyses(self):
-        s = 'With subst.s, pronom.s, and vn.s. Before (a) Vowels a, e and graphic h: coadam 17b29; \
+        s = 'With subst.s, pronom.s, and vn.s. Before (a) Vowels a, e and graphic h: coadam 17b29, \
 co euam 17b29, cohóir 18d10. (b) Cons.s (1) b: co burpi 17c23. (2) t, c: cotecht 9d32, cotíchtin 25d1, \
 co crist 2a21, cocenn 23a19. (3) l, m, n, r: colaa 5b4, collaa 5b4, comoidim 17d19, conuie 4b29, \
-conech 26b25, in contracted form, ressurectionem christo (= Facs.) 24a11. (4) f: \
-cofer 9d31, 32, coforcenn 14c14.'
+conech 26b25, ressurectionem christo 24a11. (4) f: cofer 9d31, 32, coforcenn 14c14.'
+        prep = Preposition('', '', common_case='acc')
+        add_simple_forms(s, prep)
+        self.assertEqual(len(prep.form_analyses[0].forms), 16)
+
 
     def test_add_article_form_analyses(self):
         s = 'With the art. and subst.: f. cossin noin 2a21, 22, cosin noin 2a21, n. cossalaasa 23a17.'
