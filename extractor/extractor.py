@@ -56,8 +56,12 @@ def extract_forms(s):
         elif n % 2 == 1:
             current_form = Form(match)
         else:
-            current_form.set_loci(extract_loci(match))
+            loci = extract_loci(match)
+            current_form.set_loci(loci)
             forms.append(current_form)
+
+            if not loci:
+                print 'No loci for form "{}", is this correct?'.format(current_form.form)
 
     return forms
 

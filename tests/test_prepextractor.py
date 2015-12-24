@@ -8,13 +8,20 @@ from extractor.prepextractor import add_article_form_analyses, add_pron_form_ana
 
 class TestPrepExtractor(unittest.TestCase):
 
+    def test_add_simple_form_analyses(self):
+        s = 'With subst.s, pronom.s, and vn.s. Before (a) Vowels a, e and graphic h: coadam 17b29; \
+co euam 17b29, cohóir 18d10. (b) Cons.s (1) b: co burpi 17c23. (2) t, c: cotecht 9d32, cotíchtin 25d1, \
+co crist 2a21, cocenn 23a19. (3) l, m, n, r: colaa 5b4, collaa 5b4, comoidim 17d19, conuie 4b29, \
+conech 26b25, in contracted form, ressurectionem christo (= Facs.) 24a11. (4) f: \
+cofer 9d31, 32, coforcenn 14c14.'
+
     def test_add_article_form_analyses(self):
         s = 'With the art. and subst.: f. cossin noin 2a21, 22, cosin noin 2a21, n. cossalaasa 23a17.'
         prep = Preposition('', '', common_case='acc')
         add_article_form_analyses(s, prep)
         self.assertEqual(len(prep.form_analyses), 2)
         self.assertEqual(prep.form_analyses[0].case, 'acc')
-        self.assertEqual(prep.form_analyses[0].classifier, 'With the art. and subst.: ')
+        self.assertEqual(prep.form_analyses[0].classifier, 'def. art.')
         self.assertEqual(prep.form_analyses[0].gender, 'f')
         self.assertEqual(prep.form_analyses[0].forms[0].form, 'cossin noin')
         self.assertEqual(str(prep.form_analyses[0].forms[0].loci[1]), str(Locus(2, 'a', 22)))
@@ -58,6 +65,4 @@ with emph. pron. 1pl. etrunni 12b12, 2pl. etruib 24c22, 27b18, 21 (bis), 3pl. et
 32a27, with emph. pron. 2pl. cucuibsi 1a8, 14a8, 14, 17a11, 24b14, 26c2, cucuib si \
 24c17, 3pl. cuccu 5a3, 27c24, with emph. pron. 3pl. cuccusom 14d30.'
         prep = Preposition('', '', common_case='acc')
-        add_pron_form_analyses(s, prep)
-        print prep
-
+        #add_pron_form_analyses(s, prep)
