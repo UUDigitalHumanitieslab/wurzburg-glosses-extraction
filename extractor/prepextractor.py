@@ -27,7 +27,7 @@ def add_simple_forms(s, current_prep):
 
     forms = []
     for match in PREP_FORMS.findall(s):
-        forms.extend(extract_forms(match))
+        forms.extend(extract_forms(match[1]))
 
     current_form_analysis.set_forms(forms)
 

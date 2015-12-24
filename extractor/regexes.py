@@ -80,9 +80,10 @@ VERB_EMPHATIC_ELEMENTS = re.compile(r"""
 """, re.X)
 
 PREP_FORMS = re.compile(r"""
+    (.*?)                   # matches anything, lazily
     :\s                     # matches ": "
     (.*?)                   # matches anything, lazily
-    (?:\s\([0-9a-z]\)       # matches a digit or letter between parentheses
+    (?:\s\([0-9a-z]\)\s     # matches a digit or letter between parentheses
     |$)                     # matches the end of the string
 """, re.X)
 

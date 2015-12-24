@@ -126,6 +126,10 @@ class FormAnalysis(object):
             self.number = kwargs.get('number', None)
             self.gender = kwargs.get('gender', None)
 
+        if isinstance(part_of_speech, DefiniteArticle):
+            self.case = kwargs.get('case', None)
+            self.person = kwargs.get('person', None)
+
         self.parent = part_of_speech
         self.forms = []
 
