@@ -9,11 +9,22 @@
     <fieldset>
         <div class="pure-g">
             <div class="pure-u-1">
+                <label for="pos">Part of Speech</label>
+                <select id="pos" name="pos">
+                    <option value="adj">Adjective</option>
+                    <option value="adv">Adverb</option>
+                    <option value="art">Definite article</option>
+                    <option value="noun">Noun</option>
+                    <option value="prep">Preposition</option>
+                    <option value="verb">Verb</option>
+                </select>
+            </div>
+            <div class="pure-u-1">
                 <label for="gloss">Gloss</label>
-                <input id="gloss" name="gloss" type="textarea">
+                <textarea id="gloss" name="gloss"></textarea>
             </div>
         </div>
-        <input type="submit" class="pure-button pure-button-primary" value="Start searching!"/>
+        <input type="submit" class="pure-button pure-button-primary" value="Parse"/>
     </fieldset>
 </form>
 {% endblock %}

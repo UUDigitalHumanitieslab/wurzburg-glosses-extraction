@@ -2,5 +2,28 @@
 {% block header %}Results{% endblock %}
 {% set active_page = 'results' %}
 {% block content %}
-{{ results }}
+<p>
+    <strong>{{ pos.headword }}</strong> <em>{{ pos.definition }}</em>
+    <ul>
+        {% for fa in pos.form_analyses %}
+        <li>
+            {{ fa.stem }}
+            <ul>
+                {% for f in fa.forms %}
+                <li>
+                    {{ f.form }}
+                    <ul>
+                        {% for l in f.loci %}
+                        <li>
+                            {{ l }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ul>
+</p>
 {% endblock %}
