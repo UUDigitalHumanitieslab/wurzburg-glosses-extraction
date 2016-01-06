@@ -1,7 +1,7 @@
 import codecs
 
 from extractor.extractor import create_pos
-from extractor.verbextractor import create_verb
+from extractor.prepextractor import create_preposition
 from extractor.models import Noun, Adjective
 
 if __name__ == "__main__":
@@ -16,10 +16,20 @@ if __name__ == "__main__":
             line = line.strip()
             pos = create_pos(line, Adjective)
             print pos
-    """
     with codecs.open('data/verbs.txt', 'rb') as in_file:
         for line in in_file:
             line = line.strip()
             line = line.replace('&amp;', '&')  # fix XML escapes
             verb = create_verb(line)
             print verb
+    """
+    with codecs.open('data/o.txt', 'rb') as in_file:
+        s = ''
+        for line in in_file:
+            line = line.strip()
+            line = line.replace('&amp;', '&')  # fix XML escapes
+            s += line + ' '
+
+        print s
+        prep = create_preposition(s)
+        print prep

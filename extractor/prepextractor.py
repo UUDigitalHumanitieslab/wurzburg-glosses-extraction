@@ -2,7 +2,7 @@ import re
 
 from .extractor import extract_forms
 from .models import Preposition, FormAnalysis
-from .regexes import match_regex, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG
+from .regexes import match_regex, PREP_HEADWORD, PREP_PARTS, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG
 
 SINGULAR = 'sg'
 ARTICLE_CLASSIFIER = 'def. art.'
@@ -11,12 +11,38 @@ DAT_CASE = 'dat.'
 
 
 def create_preposition(s):
+    """
+    Creates a PartOfSpeech (of given class cls) from a string s.
+    A PartOfSpeech consists of one or more FormAnalyses.
+    """
+    prep = None
+    splits = PREP_PARTS.split(s)
+    for n, match in enumerate(splits):
+        if n == 0:
+            prep = extract_preposition(match)
+            pass
+        else:
+            print n, match
+            if 'subst.' in match:
+                pass  # add_simple_forms(match, prep)
+            elif 'rel. pron.' in match:
+                pass  # add_relative_forms(match, prep)
+            elif 'art.' in match:
+                pass  # add_article_forms(match, prep)
+            elif 'poss. pron.' in match or 'suffix. pron.' in match :
+                if n == 5:
+                    add_pron_form_analyses(match, prep)
+
+    return prep
+
+
+def extract_preposition(s):
     if 'accus.' in s or 'acc.' in s:
         common_case = ACC_CASE
     elif 'dat.' in s:
         common_case = DAT_CASE
 
-    headword = 'test'
+    headword = PREP_HEADWORD.match(s).group(1)
 
     return Preposition(headword, '', common_case=common_case)
 
@@ -32,7 +58,7 @@ def add_simple_forms(s, current_prep):
     current_form_analysis.set_forms(forms)
 
 
-def add_article_form_analyses(s, current_prep):
+def add_article_forms(s, current_prep):
     current_form_analysis = None
     current_number = SINGULAR
     for n, match in enumerate(re.split(r"""([mfn])\.\s""", s)):

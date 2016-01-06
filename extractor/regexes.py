@@ -79,6 +79,17 @@ VERB_EMPHATIC_ELEMENTS = re.compile(r"""
     (?:[nmf]\.)?)           # matches gender (optionally)
 """, re.X)
 
+PREP_HEADWORD = re.compile(r"""
+    (?:\d\s)?               # matches an optional number
+    (.*?)                   # matches anything (lazily)
+    (?:\s\(.*?\))?          # matches anything between brackets, optionally
+    \sPrep\.                # matches 'Prep.'
+""", re.X)
+
+PREP_PARTS = re.compile(r"""
+    \s[A-Z]\.\s             # matches a capital letter
+""", re.X)
+
 PREP_FORMS = re.compile(r"""
     (.*?)                   # matches anything, lazily
     :\s                     # matches ": "

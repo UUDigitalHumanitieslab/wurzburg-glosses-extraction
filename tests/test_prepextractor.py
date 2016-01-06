@@ -3,7 +3,7 @@
 import unittest
 
 from extractor.models import Preposition, Locus
-from extractor.prepextractor import add_simple_forms, add_article_form_analyses, add_pron_form_analyses
+from extractor.prepextractor import add_simple_forms, add_article_forms, add_pron_form_analyses
 
 
 class TestPrepExtractor(unittest.TestCase):
@@ -17,10 +17,10 @@ conech 26b25, ressurectionem christo 24a11. (4) f: cofer 9d31, 32, coforcenn 14c
         add_simple_forms(s, prep)
         self.assertEqual(len(prep.form_analyses[0].forms), 16)
 
-    def test_add_article_form_analyses(self):
+    def test_add_article_forms(self):
         s = 'With the art. and subst.: f. cossin noin 2a21, 22, cosin noin 2a21, n. cossalaasa 23a17.'
         prep = Preposition('', '', common_case='acc')
-        add_article_form_analyses(s, prep)
+        add_article_forms(s, prep)
         self.assertEqual(len(prep.form_analyses), 2)
         self.assertEqual(prep.form_analyses[0].case, 'acc')
         self.assertEqual(prep.form_analyses[0].classifier, 'def. art.')
