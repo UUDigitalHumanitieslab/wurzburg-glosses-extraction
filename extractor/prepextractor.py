@@ -4,10 +4,11 @@ from .extractor import extract_forms
 from .models import Preposition, FormAnalysis
 from .regexes import match_regex, PREP_HEADWORD, PREP_PARTS, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG
 
-SINGULAR = 'sg'
-ARTICLE_CLASSIFIER = 'def. art.'
 ACC_CASE = 'accus.'
 DAT_CASE = 'dat.'
+SINGULAR = 'sg'
+RELATIVE_CLASSIFIER = 'rel. pron.'
+ARTICLE_CLASSIFIER = 'def. art.'
 
 
 def create_preposition(s):
@@ -26,10 +27,10 @@ def create_preposition(s):
             if 'subst.' in match:
                 pass  # add_simple_forms(match, prep)
             elif 'rel. pron.' in match:
-                pass  # add_relative_forms(match, prep)
+                add_simple_forms(match, prep, RELATIVE_CLASSIFIER)
             elif 'art.' in match:
                 pass  # add_article_forms(match, prep)
-            elif 'poss. pron.' in match or 'suffix. pron.' in match :
+            elif 'poss. pron.' in match or 'suffix. pron.' in match:
                 if n == 5:
                     add_pron_form_analyses(match, prep)
 
@@ -47,8 +48,12 @@ def extract_preposition(s):
     return Preposition(headword, '', common_case=common_case)
 
 
-def add_simple_forms(s, current_prep):
-    current_form_analysis = FormAnalysis(current_prep)
+def add_simple_forms(s, current_prep, classifier):
+    if classifier:
+        current_form_analysis = FormAnalysis(current_prep)
+    else:
+        current_form_analysis = FormAnalysis(current_prep, classifier=RELATIVE_CLASSIFIER)
+
     current_prep.add_form_analysis(current_form_analysis)
 
     forms = []
