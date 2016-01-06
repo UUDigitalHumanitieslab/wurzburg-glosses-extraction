@@ -146,13 +146,15 @@ class FormAnalysis(object):
         if isinstance(self.parent, Noun) or isinstance(self.parent, Adjective):
             f = 'FormAnalysis: case: {c}, gender: {g}'
             s = f.format(c=self.case, g=self.gender)
-        if isinstance(self.parent, Preposition):
-            f = 'FormAnalysis: case: {c}, classifier: {cl}, person: {p}, number: {n}, gender: {g}'
-            s = f.format(c=self.case, cl=self.classifier, p=self.person, n=self.number, g=self.gender)
         if isinstance(self.parent, Verb):
             f = 'FormAnalysis: stem: {s}, is_active: {v}, person: {p}, relative: {r}, po: {po}, ee: {ee}'
             s = f.format(s=self.stem, v=self.is_active, p=self.person, r=self.relative,
                          po=self.pronominal_object, ee=self.empathic_elements)
+        if isinstance(self.parent, Adverb):
+            s = 'FormAnalysis'
+        if isinstance(self.parent, Preposition):
+            f = 'FormAnalysis: case: {c}, classifier: {cl}, person: {p}, number: {n}, gender: {g}'
+            s = f.format(c=self.case, cl=self.classifier, p=self.person, n=self.number, g=self.gender)
 
         for form in self.forms:
             s += '\n\t\t{}'.format(form)

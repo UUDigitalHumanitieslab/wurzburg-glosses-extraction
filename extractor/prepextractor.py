@@ -48,7 +48,7 @@ def extract_preposition(s):
     return Preposition(headword, '', common_case=common_case)
 
 
-def add_simple_forms(s, current_prep, classifier):
+def add_simple_forms(s, current_prep, classifier=None):
     if classifier:
         current_form_analysis = FormAnalysis(current_prep)
     else:

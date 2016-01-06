@@ -79,6 +79,16 @@ VERB_EMPHATIC_ELEMENTS = re.compile(r"""
     (?:[nmf]\.)?)           # matches gender (optionally)
 """, re.X)
 
+ADV_HEADWORD = re.compile(r"""
+    (.*?)                   # matches anything (lazily)
+    \sAdv\.\s               # matches "Adv."
+    (?:of\splace\s)?        # matches "of space" (optionally)
+    (?:\(.*?\))?            # matches anything between parentheses
+    (?:[,;]\s)?             # matches "[;,]" (optionally)
+    ((lit\.\s)?             # matches "lit." (optionally)
+    .*?)\.                  # matches anything (lazily) before a dot
+""", re.X)
+
 PREP_HEADWORD = re.compile(r"""
     (?:\d\s)?               # matches an optional number
     (.*?)                   # matches anything (lazily)
