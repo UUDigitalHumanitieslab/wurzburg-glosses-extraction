@@ -123,7 +123,7 @@ PREP_PNG = re.compile(r"""
 PREP_EMPH_PRON = re.compile(r"""
     ((?:with\s)?            # matches "with" (optionally)
     emph\.\s                # matches "emph."
-    pron\.\s)               # matches "pron."
+    pron\.)                 # matches "pron."
 """, re.X)
 
 

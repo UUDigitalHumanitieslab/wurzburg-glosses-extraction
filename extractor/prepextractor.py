@@ -25,14 +25,14 @@ def create_preposition(s):
             pass
         else:
             print n, match
-            if 'subst.' in match:
-                pass  # add_simple_forms(match, prep)
-            elif 'rel. pron.' in match:
-                pass  # add_simple_forms(match, prep, RELATIVE_CLASSIFIER)
+            if 'rel. pron.' in match or 'rel. part.' in match:
+                add_simple_forms(match, prep, RELATIVE_CLASSIFIER)
             elif 'art.' in match:
                 add_article_forms(match, prep)
             elif 'poss. pron.' in match or 'suffix. pron.' in match:
-                add_pron_form_analyses(match, prep)
+                pass #add_pron_form_analyses(match, prep)
+            else:
+                add_simple_forms(match, prep)
 
     return prep
 
@@ -87,6 +87,7 @@ def add_pron_form_analyses(s, current_prep):
     classifier, post_classifier = match_regex(s, PREP_CLASSIFIER)
 
     current_form_analysis = None
+    current_ee = None
     splits = PREP_PNG.split(post_classifier)
     for n, match in enumerate(splits):
         if n == 0:
@@ -96,18 +97,26 @@ def add_pron_form_analyses(s, current_prep):
                                                  classifier=classifier,
                                                  person=splits[n],
                                                  number=splits[n + 1],
-                                                 gender=splits[n + 2])
+                                                 gender=splits[n + 2],
+                                                 empathic_elements=current_ee)
             current_prep.add_form_analysis(current_form_analysis)
         elif n % 4 == 0:
             forms = extract_forms(match)
 
             for form in forms:
                 emph_pron, post_emph_pron = match_regex(form.form, PREP_EMPH_PRON)
-                if emph_pron:
+                # If we find an emph_pron and there is a form after that, copy the current FormAnalysis
+                if emph_pron and post_emph_pron:
                     current_form_analysis = copy.deepcopy(current_form_analysis)
                     current_form_analysis.empathic_elements = emph_pron
                     current_form_analysis.set_forms([])
                     current_prep.add_form_analysis(current_form_analysis)
                     form.form = post_emph_pron
-
-                current_form_analysis.append_form(form)
+                    current_form_analysis.append_form(form)
+                # If we find an emph_pron but there is no form after that, add it to the next FormAnalysis
+                elif emph_pron:
+                    current_ee = emph_pron
+                # Otherwise, set the current_ee back to None and add the Form
+                else:
+                    current_ee = None
+                    current_form_analysis.append_form(form)

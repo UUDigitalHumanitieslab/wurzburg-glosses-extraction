@@ -24,12 +24,16 @@ if __name__ == "__main__":
             verb = create_verb(line)
             print verb
     """
-    with codecs.open('data/o.txt', 'rb') as in_file:
+    with codecs.open('data/eter.txt', 'rb') as in_file:
         s = ''
         for line in in_file:
+            if line.startswith('I.'):  # stop at meanings
+                break
             line = line.strip()
             line = line.replace('&amp;', '&')  # fix XML escapes
-            s += line + ' '
+            if not line.isdigit():  # skip page numbers
+                s += line + ' '
+            is_page = False
 
         print s
         prep = create_preposition(s)

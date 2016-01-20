@@ -31,7 +31,7 @@ conech 26b25, ressurectionem christo 24a11. (4) f: cofer 9d31, 32, coforcenn 14c
 
     def test_add_pron_form_analyses(self):
         s = 'With suffix. pron. 3sg. m. etir 28b3, 1pl. etronn 15a32, etrunn 31a11, \
-with emph. pron. etrunni 12b12, 2pl. etruib 24c22, 27b18, 21 (bis), 3pl. etarru 7d10, 27d19, ettarru 33b18.'
+with emph. pron. 1pl. etrunni 12b12, 2pl. etruib 24c22, 27b18, 21 (bis), 3pl. etarru 7d10, 27d19, ettarru 33b18.'
         prep = Preposition('', '', common_case='acc')
         add_pron_form_analyses(s, prep)
         self.assertEqual(len(prep.form_analyses), 5)
