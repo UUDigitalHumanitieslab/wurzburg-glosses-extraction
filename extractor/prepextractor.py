@@ -1,8 +1,9 @@
+import copy
 import re
 
 from .extractor import extract_forms
 from .models import Preposition, FormAnalysis
-from .regexes import match_regex, PREP_HEADWORD, PREP_PARTS, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG
+from .regexes import match_regex, PREP_HEADWORD, PREP_PARTS, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG, PREP_EMPH_PRON
 
 ACC_CASE = 'accus.'
 DAT_CASE = 'dat.'
@@ -27,12 +28,11 @@ def create_preposition(s):
             if 'subst.' in match:
                 pass  # add_simple_forms(match, prep)
             elif 'rel. pron.' in match:
-                add_simple_forms(match, prep, RELATIVE_CLASSIFIER)
+                pass  # add_simple_forms(match, prep, RELATIVE_CLASSIFIER)
             elif 'art.' in match:
-                pass  # add_article_forms(match, prep)
+                add_article_forms(match, prep)
             elif 'poss. pron.' in match or 'suffix. pron.' in match:
-                if n == 5:
-                    add_pron_form_analyses(match, prep)
+                add_pron_form_analyses(match, prep)
 
     return prep
 
@@ -49,10 +49,7 @@ def extract_preposition(s):
 
 
 def add_simple_forms(s, current_prep, classifier=None):
-    if classifier:
-        current_form_analysis = FormAnalysis(current_prep)
-    else:
-        current_form_analysis = FormAnalysis(current_prep, classifier=RELATIVE_CLASSIFIER)
+    current_form_analysis = FormAnalysis(current_prep, classifier=classifier)
 
     current_prep.add_form_analysis(current_form_analysis)
 
@@ -80,6 +77,13 @@ def add_article_forms(s, current_prep):
 
 
 def add_pron_form_analyses(s, current_prep):
+    """
+    Adds FormAnalyses to the current Preposition from the listings
+    that start with "With poss. pron." or "With suffix. pron."
+    :param s: The listing
+    :param current_prep: The current Preposition
+    :return:
+    """
     classifier, post_classifier = match_regex(s, PREP_CLASSIFIER)
 
     current_form_analysis = None
@@ -97,10 +101,13 @@ def add_pron_form_analyses(s, current_prep):
         elif n % 4 == 0:
             forms = extract_forms(match)
 
-            classifier_match = PREP_CLASSIFIER.match(forms[-1].form)
-            if classifier_match:
-                forms.pop()
-                current_form_analysis.set_forms(forms)
-                classifier = classifier_match.group(1)
-            else:
-                current_form_analysis.set_forms(forms)
+            for form in forms:
+                emph_pron, post_emph_pron = match_regex(form.form, PREP_EMPH_PRON)
+                if emph_pron:
+                    current_form_analysis = copy.deepcopy(current_form_analysis)
+                    current_form_analysis.empathic_elements = emph_pron
+                    current_form_analysis.set_forms([])
+                    current_prep.add_form_analysis(current_form_analysis)
+                    form.form = post_emph_pron
+
+                current_form_analysis.append_form(form)

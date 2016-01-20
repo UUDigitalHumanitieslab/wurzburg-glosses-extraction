@@ -23,6 +23,7 @@ if __name__ == "__main__":
             line = line.replace('&amp;', '&')  # fix XML escapes
             verb = create_verb(line)
             print verb
+    """
     with codecs.open('data/o.txt', 'rb') as in_file:
         s = ''
         for line in in_file:
@@ -40,3 +41,4 @@ if __name__ == "__main__":
             line = line.replace('&amp;', '&')  # fix XML escapes
             adverb = create_adverb(line)
             print adverb
+    """

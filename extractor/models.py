@@ -125,6 +125,7 @@ class FormAnalysis(object):
             self.person = kwargs.get('person', None)
             self.number = kwargs.get('number', None)
             self.gender = kwargs.get('gender', None)
+            self.empathic_elements = kwargs.get('empathic_elements', None)
 
         if isinstance(part_of_speech, DefiniteArticle):
             self.case = kwargs.get('case', None)
@@ -153,8 +154,9 @@ class FormAnalysis(object):
         if isinstance(self.parent, Adverb):
             s = 'FormAnalysis'
         if isinstance(self.parent, Preposition):
-            f = 'FormAnalysis: case: {c}, classifier: {cl}, person: {p}, number: {n}, gender: {g}'
-            s = f.format(c=self.case, cl=self.classifier, p=self.person, n=self.number, g=self.gender)
+            f = 'FormAnalysis: case: {c}, classifier: {cl}, person: {p}, number: {n}, gender: {g}, ee: {ee}'
+            s = f.format(c=self.case, cl=self.classifier, p=self.person,
+                         n=self.number, g=self.gender, ee=self.empathic_elements)
 
         for form in self.forms:
             s += '\n\t\t{}'.format(form)

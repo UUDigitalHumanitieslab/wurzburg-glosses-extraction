@@ -110,13 +110,20 @@ PREP_FORMS = re.compile(r"""
 
 PREP_CLASSIFIER = re.compile(r"""
     [wW]ith\s               # matches "With" or "with"
-    ((?:suffix|emph)\.\s    # matches "suffix" or "emph"
+    ((?:suffix|poss)\.\s    # matches "suffix" or "poss"
     pron\.)                 # matches "pron."
 """, re.X)
 
 PREP_PNG = re.compile(r"""
+    (?:[:;]\s)?             # matches "[:;] " (optionally)
     ([1-3])(sg|pl)\.\s      # matches person and number
     ([nmf]\.)?              # matches gender (optionally)
+""", re.X)
+
+PREP_EMPH_PRON = re.compile(r"""
+    ((?:with\s)?            # matches "with" (optionally)
+    emph\.\s                # matches "emph."
+    pron\.\s)               # matches "pron."
 """, re.X)
 
 

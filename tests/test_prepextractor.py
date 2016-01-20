@@ -31,7 +31,7 @@ conech 26b25, ressurectionem christo 24a11. (4) f: cofer 9d31, 32, coforcenn 14c
 
     def test_add_pron_form_analyses(self):
         s = 'With suffix. pron. 3sg. m. etir 28b3, 1pl. etronn 15a32, etrunn 31a11, \
-with emph. pron. 1pl. etrunni 12b12, 2pl. etruib 24c22, 27b18, 21 (bis), 3pl. etarru 7d10, 27d19, ettarru 33b18.'
+with emph. pron. etrunni 12b12, 2pl. etruib 24c22, 27b18, 21 (bis), 3pl. etarru 7d10, 27d19, ettarru 33b18.'
         prep = Preposition('', '', common_case='acc')
         add_pron_form_analyses(s, prep)
         self.assertEqual(len(prep.form_analyses), 5)
@@ -40,9 +40,9 @@ with emph. pron. 1pl. etrunni 12b12, 2pl. etruib 24c22, 27b18, 21 (bis), 3pl. et
         self.assertEqual(prep.form_analyses[0].gender, 'm.')
         self.assertEqual(prep.form_analyses[1].person, '1')
         self.assertEqual(prep.form_analyses[1].number, 'pl')
-        self.assertEqual(prep.form_analyses[2].classifier, 'emph. pron.')
         self.assertEqual(prep.form_analyses[2].person, '1')
         self.assertEqual(prep.form_analyses[2].number, 'pl')
+        self.assertEqual(prep.form_analyses[2].empathic_elements, 'with emph. pron.')
         self.assertEqual(prep.form_analyses[3].person, '2')
         self.assertEqual(prep.form_analyses[3].number, 'pl')
         self.assertEqual(prep.form_analyses[4].person, '3')
