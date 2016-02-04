@@ -77,6 +77,7 @@ VERB_PRONOMINAL_OBJECT = re.compile(r"""
     (?:and\s)?                      # matches "and" (optionally)
     ((?:with\s)?                    # matches "with" (optionally)
     (?:elision\sof\s)?              # matches "elision of" (optionally)
+    (?:proleptic\s)?                # matches "proleptic" (optionally)
     (?:(?:in|suf)fix|anaph)\.\s     # matches "infix/suffix." or "anaph."
     pron\.\s                        # matches "pron."
     (?:[1-3](?:sg|pl)\.\s)?         # matches person and number (optionally)
