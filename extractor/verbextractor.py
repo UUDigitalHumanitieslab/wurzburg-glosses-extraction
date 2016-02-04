@@ -45,9 +45,9 @@ def find_verb(s):
         definition = None
         match = VERB_HEADWORD.match(verb_string)
         if match:
-            headword = remove_html_tags(match.group(1).strip())
+            headword = remove_html_tags(match.group(1))
             if match.group(2):
-                definition = remove_html_tags(match.group(2).strip())
+                definition = remove_html_tags(match.group(2))
         else:
             headword = verb_string
 

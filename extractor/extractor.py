@@ -47,7 +47,7 @@ def extract_pos(s, cls):
     match = POS_DEFINITION.match(add_def)
     if match:
         additional = match.group(1)
-        definition = remove_html_tags(match.group(2).strip())
+        definition = remove_html_tags(match.group(2))
 
     return cls(headword, definition, additional=additional, common_stem=stem, common_gender=gender)
 

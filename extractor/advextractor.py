@@ -1,12 +1,12 @@
 from .extractor import extract_forms
 from .models import Adverb, FormAnalysis
-from .regexes import ADV_HEADWORD
+from .regexes import remove_html_tags, ADV_HEADWORD
 
 
 def create_adverb(s):
     match = ADV_HEADWORD.match(s)
-    headword = match.group(1)
-    definition = match.group(2)
+    headword = remove_html_tags(match.group(1))
+    definition = remove_html_tags(match.group(2))
     post_definition = s[match.end(2) + 2:].lstrip()
 
     # Special case when no definition is given, but only forms/loci

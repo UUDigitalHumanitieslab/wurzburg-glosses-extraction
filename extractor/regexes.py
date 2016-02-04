@@ -94,8 +94,8 @@ VERB_EMPHATIC_ELEMENTS = re.compile(r"""
 
 ADV_HEADWORD = re.compile(r"""
     (.*?)                   # matches anything (lazily)
-    \sAdv\.\s               # matches "Adv."
-    (?:of\splace\s)?        # matches "of space" (optionally)
+    Adv\.\s                 # matches "Adv."
+    (?:of\splace\s)?        # matches "of place" (optionally)
     (?:\(.*?\))?            # matches anything between parentheses
     (?:[,;]\s)?             # matches "[;,]" (optionally)
     ((lit\.\s)?             # matches "lit." (optionally)
@@ -155,4 +155,7 @@ def match_regex(s, regex):
 
 
 def remove_html_tags(s):
-    return REMOVE_HTML_TAGS.sub('', s)
+    """
+    Removes HTML tags from a string and trims the result.
+    """
+    return REMOVE_HTML_TAGS.sub('', s).strip()
