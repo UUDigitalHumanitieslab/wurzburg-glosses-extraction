@@ -1,18 +1,22 @@
-from .models import FormAnalysis, Form, Locus
-from .regexes import remove_html_tags, POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
+from .models import Noun, Adjective, FormAnalysis, Form, Locus
+from .regexes import remove_html_tags, SPLIT_EXAMPLES, POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
 
 
-def create_pos(s, cls):
+def create_pos(s):
     """
     Creates a PartOfSpeech (of given class cls) from a string s.
     A PartOfSpeech consists of one or more FormAnalyses.
     """
+    match = SPLIT_EXAMPLES.match(s)
+    if match:
+        s = match.group(1)
+
     pos = None
     current_form_analysis = None
     splits = FORM_ANALYSES.split(s)
     for n, match in enumerate(splits):
         if n == 0:
-            pos = extract_pos(match, cls)
+            pos = extract_pos(match)
             pass
         elif n % 3 == 1:
             current_form_analysis = FormAnalysis(pos, case=splits[n], gender=splits[n + 1])
@@ -23,7 +27,7 @@ def create_pos(s, cls):
     return pos
 
 
-def extract_pos(s, cls):
+def extract_pos(s):
     """
     Extracts a PartOfSpeech definition from a string s.
     """
@@ -49,6 +53,7 @@ def extract_pos(s, cls):
         additional = match.group(1)
         definition = remove_html_tags(match.group(2))
 
+    cls = Noun if gender else Adjective
     return cls(headword, definition, additional=additional, common_stem=stem, common_gender=gender)
 
 

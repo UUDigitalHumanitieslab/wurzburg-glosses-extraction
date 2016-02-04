@@ -20,7 +20,7 @@ class PartOfSpeech(object):
         self.form_analyses.append(form_analysis)
 
     def __str__(self):
-        s = 'POS: {}, add_info: {}, def: {}'.format(self.headword, self.additional, self.definition)
+        s = '{}: {}, add_info: {}, def: {}'.format(self.__class__.__name__, self.headword, self.additional, self.definition)
         for form_analysis in self.form_analyses:
             s += '\n\t{}'.format(form_analysis)
         return s
@@ -109,7 +109,6 @@ class FormAnalysis(object):
 
         if isinstance(part_of_speech, Adjective):
             self.case = kwargs.get('case', None)
-            self.gender = kwargs.get('gender', None)
 
         if isinstance(part_of_speech, Verb):
             self.is_active = kwargs.get('is_active', None)
@@ -144,9 +143,12 @@ class FormAnalysis(object):
         return self.forms[-1]
 
     def __str__(self):
-        if isinstance(self.parent, Noun) or isinstance(self.parent, Adjective):
-            f = 'FormAnalysis: case: {c}, gender: {g}'
-            s = f.format(c=self.case, g=self.gender)
+        if isinstance(self.parent, Noun):
+            f = 'FormAnalysis: gender: {g}, stem: {s}, case: {c}'
+            s = f.format(s=self.stem, c=self.case, g=self.gender)
+        if isinstance(self.parent, Adjective):
+            f = 'FormAnalysis: stem: {s}, case: {c}'
+            s = f.format(s=self.stem, c=self.case)
         if isinstance(self.parent, Verb):
             f = 'FormAnalysis: stem: {s}, is_active: {v}, person: {p}, relative: {r}, po: {po}, ee: {ee}'
             s = f.format(s=self.stem, v=self.is_active, p=self.person, r=self.relative,

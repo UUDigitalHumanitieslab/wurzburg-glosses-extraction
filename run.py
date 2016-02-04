@@ -4,6 +4,7 @@ import re
 
 from extractor.extractor import create_pos
 from extractor.verbextractor import create_verb, find_stem_class
+from extractor.regexes import FORM_ANALYSES
 from extractor.prepextractor import create_preposition
 from extractor.advextractor import create_adverb
 from extractor.models import Noun, Adjective
@@ -14,11 +15,10 @@ NEW_GLOSS = re.compile(r"""
 """, re.X)
 
 if __name__ == "__main__":
-    for f in glob.glob('data/wurzburg/part2_lexicon_a.txt'):
+    for f in glob.glob('data/wurzburg/part2_lexicon_b.txt'):
         with codecs.open(f) as in_file:
             glosses = []
             current_gloss = ''
-            prev_line_empty = False
             for line in in_file:
                 line = line.strip().replace('&amp;', '&')  # truncate and fix XML escapes
                 if line:
@@ -35,11 +35,23 @@ if __name__ == "__main__":
                 if 'Prep.' in gloss:
                     continue
 
+                if 'Def. art.' in gloss:
+                    continue
+
                 # Check for deponentia
                 if '(depon.)' in gloss:
                     continue
 
+                if FORM_ANALYSES.search(gloss):
+                    print gloss
+                    try:
+                        pos = create_pos(gloss)
+                        print pos
+                    except ValueError as e:
+                        print e
+
                 # Check for verbs
+                """
                 stem, _, _ = find_stem_class(gloss)
                 if stem:
                     print gloss
@@ -51,6 +63,7 @@ if __name__ == "__main__":
                     except IndexError as e:
                         print e
                     continue
+                """
 
                 # print gloss
 

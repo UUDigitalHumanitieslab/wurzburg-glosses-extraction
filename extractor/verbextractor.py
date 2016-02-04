@@ -3,7 +3,7 @@ import re
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import remove_html_tags, VERB_SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, \
+from .regexes import remove_html_tags, SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, \
     VERB_CONJUNCTION, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI, match_regex
 
 
@@ -20,7 +20,7 @@ def create_verb(s):
     TODO: deal with "with cia and infix. pron. 3sg. n." (maybe allow for \w+\sand between "with" and "infix"?)
     """
     current_verb = None
-    match = VERB_SPLIT_EXAMPLES.match(s)
+    match = SPLIT_EXAMPLES.match(s)
     if match:
         s = match.group(1)
 

@@ -13,7 +13,7 @@ POS_ANALYSIS = re.compile(r"""
 
 POS_DEFINITION = re.compile(r"""
     (?:\((.*)\)\s)?         # matches the additional info between brackets (optionally)
-    <i>(.*)<\/i>.?\.        # matches the definition between italic tags
+    <i>(.*)<\/i>.?\.?       # matches the definition between italic tags
 """, re.X)
 
 FORM_ANALYSES = re.compile(r"""
@@ -37,7 +37,7 @@ LOCI = re.compile(r"""
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)
 
-VERB_SPLIT_EXAMPLES = re.compile(r"""
+SPLIT_EXAMPLES = re.compile(r"""
     (.*?)                   # matches anything lazily
     (\.\s\(?<b>([a-z]|IV|V?I{0,3})\.?\s?<\/b> # matches start of examples marked by a letter or Roman numeral in bold
     |[:;]\s\.[\.i]\.)          # matches start of examples marked by "[:;] .[.i]."
@@ -63,6 +63,7 @@ VERB_VOICE = re.compile(r"""
 
 VERB_CONJUNCTION = re.compile(r"""
     (with\sconjn\.\s        # matches 'with conjn. '
+    (?:\w+\s)?              # matches an optional word
     (?:and\sneg\.\s)?)      # matches 'and neg. ' optionally
 """, re.X)
 
