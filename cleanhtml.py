@@ -10,10 +10,10 @@ BOLD = 'Times-Bold'
 ITALIC = 'Times-Italic'
 SUPERSCRIPT = ['font-family: Times-Roman; font-size:6px', 'font-family: Times-Roman; font-size:5px']
 DEFAULT = ['font-family: Times-Roman; font-size:11px', 'font-family: PMKPJI+Times-Roman; font-size:11px']
-STYLE_TO_CHAR = {'TTE2A04708t00': u'ɫ',
-                 'TTE29AACE8t00': u'ɫ',
-                 'TTE2A03EA8t00': u'ɫ',
-                 'TTE2A09768t00': u'ɫ',  # can also be ⊂ ?
+STYLE_TO_CHAR = {'TTE29AACE8t00': (u'⊃', u'ɫ'),
+                 'TTE2A03EA8t00': (u'⊃', u'ɫ'),
+                 'TTE2A04708t00': (u'⊃', u'ɫ'),
+                 'TTE2A09768t00': (u'ɫ', u'⊃'),
                  'TTE2A0BAA8t00': u'\u032f',
                  'TTE29B0E68t00': u'\u032f',
                  'TTE2A0E268t00': u'\u032f',
@@ -40,7 +40,10 @@ def as_unicode(tag):
 def fix_chars(tag):
     for s, char in STYLE_TO_CHAR.items():
         if s in tag['style']:
-            return char
+            if type(char) == tuple:
+                return char[0] if tag.text == '(cid:0)' else char[1]
+            else:
+                return char
     return ''
 
 
