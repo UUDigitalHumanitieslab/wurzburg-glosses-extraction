@@ -1,5 +1,5 @@
 from .models import FormAnalysis, Form, Locus
-from .regexes import POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
+from .regexes import remove_html_tags, POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
 
 
 def create_pos(s, cls):
@@ -27,19 +27,27 @@ def extract_pos(s, cls):
     """
     Extracts a PartOfSpeech definition from a string s.
     """
+    # Capture the headword, gender and stem
     match = POS_ANALYSIS.match(s)
-    headword = match.group(1)
+    headword = match.group(1).strip()
     gender = match.group(2)  # for Nouns
     stem = match.group(3)  # for both Adjectives and Nouns
+    add_def = match.group(4).strip()
     additional = None
     definition = None
 
-    unmatched = s[match.end():].strip()
-    if unmatched:
-        match = POS_DEFINITION.match(unmatched)
-        if POS_DEFINITION.match(unmatched):
-            additional = match.group(1)
-            definition = match.group(2)
+    if stem:
+        stem = stem.strip()
+
+    # If a start tag was stripped, place it back
+    if add_def.startswith('i>'):
+        add_def = '<' + add_def
+
+    # Split the additional information from the definition
+    match = POS_DEFINITION.match(add_def)
+    if match:
+        additional = match.group(1)
+        definition = remove_html_tags(match.group(2).strip())
 
     return cls(headword, definition, additional=additional, common_stem=stem, common_gender=gender)
 

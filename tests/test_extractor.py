@@ -43,16 +43,17 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual(forms[1].form, 'dechur')
 
     def test_extract_pos(self):
-        s = 'dochumacht i, Difficult, impossible,\'hardly possible\'.'
+        s = '<b>dochumacht </b>i? <i>Difficult</i>, <i>impossible</i>, \'<i>hardly possible</i>\'.'
         noun = extract_pos(s, Adjective)
         self.assertEqual(noun.headword, 'dochumacht')
-        self.assertEqual(noun.common_stem, 'i')
+        self.assertEqual(noun.common_stem, 'i?')
         self.assertIsNone(noun.additional)
-        self.assertEqual(noun.definition, 'Difficult, impossible,\'hardly possible\'')
+        self.assertEqual(noun.definition, 'Difficult, impossible, \'hardly possible')
 
     def test_create_pos(self):
-        s = 'díabul m. o, (without the art.) The Devil, Satan. Nsg. diabul 26a5, ' \
-            '29b19, Asg. diabul 23d8, 26a23, 28b30, diabol 22d11, Gsg. diabuil 3b11.'
+        s = '<b>díabul </b>m. o, (without the art.) <i>The Devil</i>, <i>Satan</i>. Nsg. <i>diabul </i>26a5, ' \
+            '29b19, Asg. diabul 23d8, 26a23, 28b30, <i>diab</i>ol 22d11, Gsg. ' \
+            '<i>diab</i>uil 3b11'
         noun = create_pos(s, Noun)
         self.assertEqual(noun.headword, 'díabul')
         self.assertEqual(noun.common_gender, 'm')
@@ -72,5 +73,5 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual(noun.form_analyses[2].gender, 'm')
 
         self.assertEqual(len(noun.form_analyses[1].forms), 2)
-        self.assertEqual(noun.form_analyses[1].forms[1].form, 'diabol')
+        self.assertEqual(noun.form_analyses[1].forms[1].form, '<i>diab</i>ol')
         self.assertEqual(str(noun.form_analyses[1].forms[0].loci[1]), str(Locus(26, 'a', 23)))

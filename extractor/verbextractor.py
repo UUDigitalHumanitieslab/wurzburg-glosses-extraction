@@ -3,7 +3,7 @@ import re
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import REMOVE_HTML_TAGS, VERB_SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, \
+from .regexes import remove_html_tags, VERB_SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, \
     VERB_CONJUNCTION, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI, match_regex
 
 
@@ -45,9 +45,9 @@ def find_verb(s):
         definition = None
         match = VERB_HEADWORD.match(verb_string)
         if match:
-            headword = REMOVE_HTML_TAGS.sub('', match.group(1).strip())
+            headword = remove_html_tags(match.group(1).strip())
             if match.group(2):
-                definition = REMOVE_HTML_TAGS.sub('', match.group(2).strip())
+                definition = remove_html_tags(match.group(2).strip())
         else:
             headword = verb_string
 
