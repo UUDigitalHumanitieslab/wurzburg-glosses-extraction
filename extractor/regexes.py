@@ -1,5 +1,9 @@
 import re
 
+REMOVE_HTML_TAGS = re.compile(r"""
+    <[^>]+>                 # matches a HTML tags
+""", re.X)
+
 POS_ANALYSIS = re.compile(r"""
     ([^\.,]*)               # matches anything but a space or dot, the headword
     \s(?:([nmf])\.\s)?      # matches the gender (optionally)
@@ -33,8 +37,14 @@ LOCI = re.compile(r"""
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
 """, re.X)
 
+VERB_SPLIT_EXAMPLES = re.compile(r"""
+    (.*?)                   # matches anything lazily
+    \.\s\(?<b>([a-z]|IV|V?I{0,3})\.?\s?<\/b>   # matches an example
+""", re.X)
+
 VERB_HEADWORD = re.compile(r"""
-    (.*)\s([A-Z].*)         # splits on a capital letter
+    <b>(.*)<\/b>            # matches the headword (between bold tags)
+    (?:<i>(.*)<\/i>)?       # matches the definition (between italic tags) (optionally)
 """, re.X)
 
 VERB_ADDITIONAL_STEM = re.compile(r"""
@@ -57,7 +67,9 @@ VERB_CONJUNCTION = re.compile(r"""
 
 VERB_RELATIVE = re.compile(r"""
     ([^,]*                  # matches anything but a comma
-    rel\.(?:\sn)?)          # matches 'rel.', possibly followed by ' n'
+    rel\.                   # matches 'rel.'
+    (?:\sn)?                # matches ' n' (optionally)
+    (?:\selided)?)          # matches ' elided' (optionally)
 """, re.X)
 
 VERB_PRONOMINAL_OBJECT = re.compile(r"""
@@ -67,14 +79,15 @@ VERB_PRONOMINAL_OBJECT = re.compile(r"""
     (?:(?:in|suf)fix|anaph)\.\s     # matches "infix/suffix." or "anaph."
     pron\.\s                        # matches "pron."
     (?:[1-3](?:sg|pl)\.\s)?         # matches person and number (optionally)
-    (?:[nmf]\.)?)                   # matches gender (optionally)
+    (?:[nmf]\.\s)?                  # matches gender (optionally)
+    (?:\(elided\)\s)?)              # matches "elided" (optionally)
 """, re.X)
 
 VERB_EMPHATIC_ELEMENTS = re.compile(r"""
     (?:and\s)?              # matches "and" (optionally)
     ((?:with\s)?            # matches "with" (optionally)
     emph\.\s                # matches "emph."
-    pron\.\s                # matches "pron."
+    pron\.?\s               # matches "pron."
     [1-3](?:sg|pl)\.\s      # matches person and number
     (?:[nmf]\.)?)           # matches gender (optionally)
 """, re.X)

@@ -8,11 +8,11 @@ from extractor.regexes import VERB_PERSON, VERB_RELATIVE, VERB_PRONOMINAL_OBJECT
 
 class TestVerbExtractor(unittest.TestCase):
     def test_find_stem_class(self):
-        s = 'do-gair Perf. 3sg. dorogart 21d2'
+        s = '<b>do-gair </b>Perf. 3sg. <i>dorogart </i>21d2'
         stem, pre_stem, post_stem = find_stem_class(s)
         self.assertEqual(stem, 'Perf.')
-        self.assertEqual(pre_stem, 'do-gair')
-        self.assertEqual(post_stem, '3sg. dorogart 21d2')
+        self.assertEqual(pre_stem, '<b>do-gair </b>')
+        self.assertEqual(post_stem, '3sg. <i>dorogart </i>21d2')
 
         s = 'Perfect. Pres. Subj. 2sg. nitáirle 30d20'
         stem, pre_stem, post_stem = find_stem_class(s)
@@ -20,11 +20,11 @@ class TestVerbExtractor(unittest.TestCase):
         self.assertEqual(pre_stem, '')
         self.assertEqual(post_stem, '2sg. nitáirle 30d20')
 
-        s = 'do-airbir Pass.: Pres. Ind. (vel Pres. Subj.) 3sg. with infix. pron. 1sg. nimtharberar 9c31'
+        s = '<b>do-airbir </b>Pass.: Pres. Ind. (vel Pres. Subj.) 3sg. with infix. pron. 1sg. <i>nimtharberar</i>9c31'
         stem, pre_stem, post_stem = find_stem_class(s)
         self.assertEqual(stem, 'Pres. Ind. (vel Pres. Subj.)')
-        self.assertEqual(pre_stem, 'do-airbir Pass.:')
-        self.assertEqual(post_stem, '3sg. with infix. pron. 1sg. nimtharberar 9c31')
+        self.assertEqual(pre_stem, '<b>do-airbir </b>Pass.:')
+        self.assertEqual(post_stem, '3sg. with infix. pron. 1sg. <i>nimtharberar</i>9c31')
 
         s = 'Imperf. Ind. 3sg. doberthe 10d16'
         stem, pre_stem, post_stem = find_stem_class(s)
@@ -33,14 +33,14 @@ class TestVerbExtractor(unittest.TestCase):
         self.assertEqual(post_stem, '3sg. doberthe 10d16')
 
     def test_match_voice(self):
-        s = 'do-airbir Pass.:'
+        s = '<b>do-airbir </b>Pass.:'
         headword, is_active = match_voice(s)
-        self.assertEqual(headword, 'do-airbir')
+        self.assertEqual(headword, '<b>do-airbir </b>')
         self.assertFalse(is_active)
 
-        s = 'do-gair'
+        s = '<b>do-gair </b>'
         headword, is_active = match_voice(s)
-        self.assertEqual(headword, 'do-gair')
+        self.assertEqual(headword, '<b>do-gair </b>')
         self.assertTrue(is_active)
 
     def test_match_person(self):
@@ -77,16 +77,16 @@ class TestVerbExtractor(unittest.TestCase):
         self.assertEqual(post_po, 'doecmallaside 9d5')
 
     def test_extract_headword(self):
-        s = 'dlúmigid Masses together, nucleates. Pass. Perf. 3sg. rondlúmigedni 12a15.'
+        s = '<b>dlúmigid </b><i>Masses together</i>, <i>nucleates</i>. Pass. Perf. 3sg. rondlúmigedni 12a15.'
         verb, post_verb = find_verb(s)
         self.assertEqual(verb.headword, 'dlúmigid')
-        self.assertEqual(verb.definition, 'Masses together, nucleates.')
+        self.assertEqual(verb.definition, 'Masses together, nucleates')
         self.assertEqual(post_verb, 'Pass. Perf. 3sg. rondlúmigedni 12a15.')
 
     def test_create_verb(self):
-        s = 'do-gair Perf. 3sg. dorogart 21d2, with infix. pron. 3pl. dodarogart 22c1; ' \
-            'Pass.: Perf. 3sg. dorograd 10a22, amal dorograd 10a12, with rel. n donrograd 20d9, ' \
-            'with infix. pron. 2pl. dobrograd 24c4.'
+        s = '<b>do-gair </b>Perf. 3sg. <i>dorogart </i>21d2, with infix. pron. 3pl. <i>dodarogart </i>22c1; \
+        Pass.: Perf. 3sg. <i>dorograd </i>10a22, <i>am</i>al <i>dorograd </i>10a12, with rel. n \
+        <i>donrograd </i>20d9, with infix. pron. 2pl. <i>dobrograd </i>24c4.'
         verb = create_verb(s)
         self.assertEqual(verb.headword, 'do-gair')
         self.assertEqual(len(verb.form_analyses), 5)

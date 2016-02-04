@@ -3,8 +3,8 @@ import re
 
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
-from .regexes import VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, VERB_CONJUNCTION, \
-    VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI, match_regex
+from .regexes import REMOVE_HTML_TAGS, VERB_SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, \
+    VERB_CONJUNCTION, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI, match_regex
 
 
 VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
@@ -20,6 +20,10 @@ def create_verb(s):
     TODO: deal with "with cia and infix. pron. 3sg. n." (maybe allow for \w+\sand between "with" and "infix"?)
     """
     current_verb = None
+    match = VERB_SPLIT_EXAMPLES.match(s)
+    if match:
+        s = match.group(1)
+
     current_verb, post_verb = find_verb(s)
     for i, fa in enumerate(split_by(post_verb, ';')):   # Active and passive FormAnalyses are split by a semi-colon
         current_form_analysis = None
@@ -33,16 +37,21 @@ def create_verb(s):
 def find_verb(s):
     stem, pre_stem, post_stem = find_stem_class(s)
 
-    # If we find a stem class, check whether there is a passive annotation
     if stem:
+        # If we find a stem class, check whether there is a passive annotation
         verb_string, _ = match_voice(pre_stem)
+
+        # Extract headword and definition
+        definition = None
         match = VERB_HEADWORD.match(verb_string)
         if match:
-            headword = match.group(1)
-            definition = match.group(2)
+            headword = REMOVE_HTML_TAGS.sub('', match.group(1).strip())
+            if match.group(2):
+                definition = REMOVE_HTML_TAGS.sub('', match.group(2).strip())
         else:
             headword = verb_string
-            definition = ''
+
+        # Create the verb
         verb = Verb(headword, definition)
         post_verb = s[len(verb_string):].lstrip()
         return verb, post_verb
