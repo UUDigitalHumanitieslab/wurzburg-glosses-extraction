@@ -10,7 +10,7 @@ from extractor.models import Noun, Adjective
 
 NEW_GLOSS = re.compile(r"""
 ^<b>                # matches <b> at the start of a line
-[^(IV|V?I{0,3})]    # does not match a Roman numeral
+[^([A-Z|IV|V?I{0,3})]    # does not match a Roman numeral
 """, re.X)
 
 if __name__ == "__main__":
@@ -30,11 +30,29 @@ if __name__ == "__main__":
             glosses.append(current_gloss)
 
             for gloss in glosses:
+
+                # Check for prepositions
+                if 'Prep.' in gloss:
+                    continue
+
+                # Check for deponentia
+                if '(depon.)' in gloss:
+                    continue
+
+                # Check for verbs
                 stem, _, _ = find_stem_class(gloss)
-                if stem and not gloss.startswith('<b>-') and not gloss.startswith('<b>pridchaid'):
+                if stem:
                     print gloss
-                    verb = create_verb(gloss)
-                    print verb
+                    try:
+                        verb = create_verb(gloss)
+                        print verb
+                    except ValueError as e:
+                        print e
+                    except IndexError as e:
+                        print e
+                    continue
+
+                # print gloss
 
 
     """

@@ -39,7 +39,8 @@ LOCI = re.compile(r"""
 
 VERB_SPLIT_EXAMPLES = re.compile(r"""
     (.*?)                   # matches anything lazily
-    \.\s\(?<b>([a-z]|IV|V?I{0,3})\.?\s?<\/b>   # matches an example
+    (\.\s\(?<b>([a-z]|IV|V?I{0,3})\.?\s?<\/b> # matches start of examples marked by a letter or Roman numeral in bold
+    |[:;]\s\.[\.i]\.)          # matches start of examples marked by "[:;] .[.i]."
 """, re.X)
 
 VERB_HEADWORD = re.compile(r"""
