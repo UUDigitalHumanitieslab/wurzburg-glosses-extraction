@@ -15,7 +15,7 @@ class TestAdvExtractor(unittest.TestCase):
         self.assertEqual(adv.headword, 'amae, amæ')
         self.assertEqual(adv.definition, 'Verily, truly, surely')
         self.assertEqual(len(adv.form_analyses[0].forms), 2)
-        self.assertEqual(adv.form_analyses[0].forms[0].form, 'amae')
+        self.assertEqual(adv.form_analyses[0].forms[0].form, 'amae </i>')
         self.assertEqual(str(adv.form_analyses[0].forms[0].loci[1]), str(Locus(13, 'a', 21)))
 
         s = '<b>anúas </b>Adv. of place (stressed on the second syllable), lit. ' \

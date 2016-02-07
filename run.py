@@ -15,7 +15,7 @@ NEW_GLOSS = re.compile(r"""
 """, re.X)
 
 if __name__ == "__main__":
-    for f in glob.glob('data/wurzburg/part2_lexicon_b.txt'):
+    for f in glob.glob('data/wurzburg/part2_lexicon_d.txt'):
         with codecs.open(f) as in_file:
             glosses = []
             current_gloss = ''
@@ -36,6 +36,9 @@ if __name__ == "__main__":
                     continue
 
                 if 'Def. art.' in gloss:
+                    continue
+
+                if 'Adj.' in gloss:
                     continue
 
                 # Check for deponentia

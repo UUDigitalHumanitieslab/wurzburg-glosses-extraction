@@ -6,8 +6,8 @@ REMOVE_HTML_TAGS = re.compile(r"""
 
 POS_ANALYSIS = re.compile(r"""
     <b>(.*)<\/b>            # matches the headword (between bold tags)
-    (?:([nmf])\.\s)?        # matches the gender (optionally)
-    (?:(.*?)[\.,<])         # matches the stem class
+    (?:\[?([nmf])\.\s)?     # matches the gender (optionally)
+    (?:(.*?)\]?[\.,<])      # matches the stem class
     (.*?)$                  # matches anything until the end of the string
 """, re.X)
 
@@ -21,25 +21,19 @@ FORM_ANALYSES = re.compile(r"""
     \s(?:([nmf])\.\s)?      # matches the gender (optionally)
 """, re.X)
 
-FORMS = re.compile(r"""
-    \s?                     # start with any whitespace (optionally)
-    ([^\d,=]+)              # matches anything but a number, comma or dot, allowing unicode.
-    (?![^\(]*\))            # requires the expression to not be between parentheses (negative lookahead)
-    \s                      # end with any whitespace
-""", re.X + re.U)
-
-LOCI = re.compile(r"""
+LOCUS = re.compile(r"""
     (\d+)                   # matches the page
     ([a-d]?)                # matches the column (optionally)
     (\d*)                   # matches the number
     ([a-d]?)                # matches the subdivision (optionally)
     (?:\s\((\w+)\))?        # matches the nr_occurrences (optionally)
     (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
+    (?:\s*[,;\.]\s*|$)      # matches the end of the locus
 """, re.X)
 
 SPLIT_EXAMPLES = re.compile(r"""
     (.*?)                   # matches anything lazily
-    (\.\s\(?<b>([a-z]|IV|V?I{0,3})\.?\s?<\/b> # matches start of examples marked by a letter or Roman numeral in bold
+    (\.\s\(?<b>([a-zA-Z]|IV|V?I{0,3})\.?\s?<\/b> # matches start of examples marked by a letter or Roman numeral in bold
     |[:;]\s\.[\.i]\.)          # matches start of examples marked by "[:;] .[.i]."
 """, re.X)
 

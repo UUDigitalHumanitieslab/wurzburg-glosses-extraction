@@ -10,14 +10,14 @@ class TestExtractor(unittest.TestCase):
 
     def test_extract_loci(self):
         s = '14d3, 7a, 11'
-        loci = extract_loci(s)
+        loci, post_loci = extract_loci(s)
         self.assertEqual(len(loci), 3)
         self.assertEqual(str(loci[0]), str(Locus(14, 'd', 3)))
         self.assertEqual(str(loci[1]), str(Locus(14, 'd', 7, 'a')))
         self.assertEqual(str(loci[2]), str(Locus(14, 'd', 11)))
 
         s = '11b6a, 7 (quatter), 8b (ter)'
-        loci = extract_loci(s)
+        loci, post_loci = extract_loci(s)
         self.assertEqual(len(loci), 3)
         self.assertEqual(str(loci[0]), str(Locus(11, 'b', 6, 'a')))
         self.assertEqual(str(loci[1]), str(Locus(11, 'b', 7, '', 'quatter')))
@@ -29,14 +29,14 @@ class TestExtractor(unittest.TestCase):
             extract_loci(s)
 
         s = '30b2, 33b8 (= 33a15, ZCP XVII, 224), 34c3'
-        loci = extract_loci(s)
+        loci, post_loci = extract_loci(s)
         self.assertEqual(len(loci), 3)
         self.assertEqual(str(loci[0]), str(Locus(30, 'b', 2)))
         self.assertEqual(str(loci[1]), str(Locus(33, 'b', 8, '', '', '= 33a15, ZCP XVII, 224')))
         self.assertEqual(str(loci[2]), str(Locus(34, 'c', 3)))
 
     def test_extract_forms(self):
-        s = 'andechor 13c26 (bis), dechur 12c43, 13c26 (ter), 33c10,'
+        s = 'andechor 13c26 (bis), dechur 12c43, 13c26 (ter), 33c10'
         forms = extract_forms(s)
         self.assertEqual(len(forms), 2)
         self.assertEqual(forms[0].form, 'andechor')
@@ -44,7 +44,7 @@ class TestExtractor(unittest.TestCase):
 
     def test_extract_pos(self):
         s = '<b>dochumacht </b>i? <i>Difficult</i>, <i>impossible</i>, \'<i>hardly possible</i>\'.'
-        noun = extract_pos(s, Adjective)
+        noun = extract_pos(s)
         self.assertEqual(noun.headword, 'dochumacht')
         self.assertEqual(noun.common_stem, 'i?')
         self.assertIsNone(noun.additional)
@@ -54,7 +54,7 @@ class TestExtractor(unittest.TestCase):
         s = '<b>díabul </b>m. o, (without the art.) <i>The Devil</i>, <i>Satan</i>. Nsg. <i>diabul </i>26a5, ' \
             '29b19, Asg. diabul 23d8, 26a23, 28b30, <i>diab</i>ol 22d11, Gsg. ' \
             '<i>diab</i>uil 3b11'
-        noun = create_pos(s, Noun)
+        noun = create_pos(s)
         self.assertEqual(noun.headword, 'díabul')
         self.assertEqual(noun.common_gender, 'm')
         self.assertEqual(noun.common_stem, 'o')

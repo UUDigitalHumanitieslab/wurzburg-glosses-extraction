@@ -4,7 +4,7 @@ import re
 from .extractor import extract_forms, extract_loci
 from .models import Verb, FormAnalysis
 from .regexes import remove_html_tags, SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDITIONAL_STEM, VERB_PERSON, \
-    VERB_CONJUNCTION, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCI, match_regex
+    VERB_CONJUNCTION, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCUS, match_regex
 
 
 VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
@@ -124,7 +124,7 @@ def create_form_analysis(s, current_verb, current_form_analysis=None):
             is_new = True
         current_form_analysis.empathic_elements = empathic_elements
 
-    if LOCI.match(post_ee):
+    if LOCUS.match(post_ee):
         last_form = current_form_analysis.get_last_form()
         prev_locus = last_form.get_last_locus()
         try:

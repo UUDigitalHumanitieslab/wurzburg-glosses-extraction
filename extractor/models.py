@@ -182,7 +182,7 @@ class Form(object):
         return self.loci[-1]
 
     def __str__(self):
-        s = 'Form: {}'.format(self.form.encode('utf-8'))
+        s = 'Form: {}'.format(self.form)
         for loci in self.loci:
             s += '\n\t\t\t{}'.format(loci)
         return s

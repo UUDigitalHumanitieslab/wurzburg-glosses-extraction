@@ -1,5 +1,5 @@
 from .models import Noun, Adjective, FormAnalysis, Form, Locus
-from .regexes import remove_html_tags, SPLIT_EXAMPLES, POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, FORMS, LOCI
+from .regexes import remove_html_tags, SPLIT_EXAMPLES, POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, LOCUS
 
 
 def create_pos(s):
@@ -62,19 +62,16 @@ def extract_forms(s):
     Extracts all Forms from a string s. A Form consists of a definition and one or more Loci.
     """
     forms = []
-    current_form = None
-    for n, match in enumerate(FORMS.split(s.decode('utf-8'))):
-        if n == 0:
-            pass  # first match is empty
-        elif n % 2 == 1:
-            current_form = Form(match)
+    while s:
+        match = LOCUS.search(s)
+        if match:
+            form = Form(s[:match.start(0)].strip())
+            loci, s = extract_loci(s[match.start(0):])
+            form.set_loci(loci)
+            forms.append(form)
         else:
-            loci = extract_loci(match)
-            current_form.set_loci(loci)
-            forms.append(current_form)
-
-            if not loci:
-                print 'No loci for form "{}", is this correct?'.format(current_form.form)
+            print 'No loci for form "{}", is this correct?'.format(s)
+            break
 
     return forms
 
@@ -87,13 +84,17 @@ def extract_loci(s, prev_locus=None):
     the page and column need to be fetched from the preceding Locus.
     """
     loci = []
-    for n, match in enumerate(LOCI.findall(s)):
-        page = match[0]
-        column = match[1]
-        number = match[2]
-        subdivision = match[3]
-        nr_occurrences = match[4]
-        alternative = match[5]
+    post_locus = ''
+    for match in LOCUS.finditer(s):
+        if post_locus and match.start(0) != post_locus:
+            break
+
+        page = match.group(1)
+        column = match.group(2)
+        number = match.group(3)
+        subdivision = match.group(4)
+        nr_occurrences = match.group(5) or ''
+        alternative = match.group(6) or ''
 
         if not number:
             if prev_locus:
@@ -106,7 +107,7 @@ def extract_loci(s, prev_locus=None):
 
         locus = Locus(page, column, number, subdivision, nr_occurrences, alternative)
         loci.append(locus)
-
         prev_locus = locus
+        post_locus = match.end(0)
 
-    return loci
+    return loci, s[post_locus:]
