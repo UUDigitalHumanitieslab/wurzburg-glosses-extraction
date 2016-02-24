@@ -8,6 +8,7 @@ from extractor.regexes import FORM_ANALYSES
 from extractor.prepextractor import create_preposition
 from extractor.advextractor import create_adverb
 from extractor.models import Noun, Adjective
+import csv
 
 NEW_GLOSS = re.compile(r"""
 ^<b>                # matches <b> at the start of a line
@@ -29,8 +30,8 @@ if __name__ == "__main__":
                     current_gloss += line + ' '
             glosses.append(current_gloss)
 
+            nouns = []
             for gloss in glosses:
-
                 # Check for prepositions
                 if 'Prep.' in gloss:
                     continue
@@ -41,6 +42,10 @@ if __name__ == "__main__":
                 if 'Adj.' in gloss:
                     continue
 
+                # Check for predicates
+                if 'Predic.' in gloss:
+                    continue
+
                 # Check for deponentia
                 if '(depon.)' in gloss:
                     continue
@@ -49,7 +54,7 @@ if __name__ == "__main__":
                     print gloss
                     try:
                         pos = create_pos(gloss)
-                        print pos
+                        nouns.append(pos.get_loci_as_list())
                     except ValueError as e:
                         print e
 
@@ -69,6 +74,15 @@ if __name__ == "__main__":
                 """
 
                 # print gloss
+
+            with open('data/wurzburg/nouns.csv', 'wb') as noun_csv:
+                noun_csv.write(u'\uFEFF'.encode('utf-8'))  # the UTF-8 BOM to hint Excel we are using that...
+                csv_writer = csv.writer(noun_csv, delimiter=';')
+
+                header = ['headword', 'definition', 'gender', 'stem', 'case', 'form', 'locus', 'locus_amount', 'alternative']
+                csv_writer.writerow(header)
+                for noun in nouns:
+                    csv_writer.writerows(noun)
 
 
     """

@@ -19,6 +19,17 @@ class PartOfSpeech(object):
         """
         self.form_analyses.append(form_analysis)
 
+    def get_loci_as_list(self):
+        result = []
+        for fa in self.form_analyses:
+            for f in fa.forms:
+                for l in f.loci:
+                    result.append([self.headword, self.definition,
+                                   fa.gender if isinstance(self, Noun) else None, fa.stem, fa.case,
+                                   f.form,
+                                   l.short_str(), str(l.nr_occurrences), l.alternative])
+        return result
+
     def __str__(self):
         s = '{}: {}, add_info: {}, def: {}'.format(self.__class__.__name__, self.headword, self.additional, self.definition)
         for form_analysis in self.form_analyses:
@@ -204,6 +215,9 @@ class Locus(object):
             return self.OCCURRENCES_MAP[nr_occurrences]
         else:
             raise ValueError('Unknown number of occurrences: {}'.format(nr_occurrences))
+
+    def short_str(self):
+        return '{}{}{}{}'.format(self.page, self.column, self.number, self.subdivision)
 
     def __str__(self):
         return 'Locus: {}{}{}{} ({}), a: {}'.format(self.page, self.column, self.number, self.subdivision, self.nr_occurrences, self.alternative)
