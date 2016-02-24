@@ -15,23 +15,38 @@ NEW_GLOSS = re.compile(r"""
 [^([A-Z|IV|V?I{0,3})]    # does not match a Roman numeral
 """, re.X)
 
+
+def to_csv(posses, filename):
+    with open(filename, 'wb') as out_csv:
+        out_csv.write(u'\uFEFF'.encode('utf-8'))  # the UTF-8 BOM to hint Excel we are using that...
+        csv_writer = csv.writer(out_csv, delimiter=';')
+
+        csv_writer.writerow(posses[0].get_csv_header())
+        for pos in posses:
+            csv_writer.writerows(pos.to_csv())
+
+
+def extract_glosses(file):
+    glosses = []
+    current_gloss = ''
+    for line in file:
+        line = line.strip().replace('&amp;', '&')  # truncate and fix XML escapes
+        if line:
+            if NEW_GLOSS.match(line):
+                # We reached the start of a new gloss; append the previous to the list
+                glosses.append(current_gloss)
+                current_gloss = ''
+            current_gloss += line + ' '
+    glosses.append(current_gloss)
+
+    return glosses
+
 if __name__ == "__main__":
     for f in glob.glob('data/wurzburg/part2_lexicon_d.txt'):
         with codecs.open(f) as in_file:
-            glosses = []
-            current_gloss = ''
-            for line in in_file:
-                line = line.strip().replace('&amp;', '&')  # truncate and fix XML escapes
-                if line:
-                    if NEW_GLOSS.match(line):
-                        # We reached the start of a new gloss; append the previous to the list
-                        glosses.append(current_gloss)
-                        current_gloss = ''
-                    current_gloss += line + ' '
-            glosses.append(current_gloss)
-
             nouns = []
-            for gloss in glosses:
+            adjectives = []
+            for gloss in extract_glosses(in_file):
                 # Check for prepositions
                 if 'Prep.' in gloss:
                     continue
@@ -54,7 +69,10 @@ if __name__ == "__main__":
                     print gloss
                     try:
                         pos = create_pos(gloss)
-                        nouns.append(pos.get_loci_as_list())
+                        if isinstance(pos, Noun):
+                            nouns.append(pos)
+                        elif isinstance(pos, Adjective):
+                            adjectives.append(pos)
                     except ValueError as e:
                         print e
 
@@ -75,14 +93,8 @@ if __name__ == "__main__":
 
                 # print gloss
 
-            with open('data/wurzburg/nouns.csv', 'wb') as noun_csv:
-                noun_csv.write(u'\uFEFF'.encode('utf-8'))  # the UTF-8 BOM to hint Excel we are using that...
-                csv_writer = csv.writer(noun_csv, delimiter=';')
-
-                header = ['headword', 'definition', 'gender', 'stem', 'case', 'form', 'locus', 'locus_amount', 'alternative']
-                csv_writer.writerow(header)
-                for noun in nouns:
-                    csv_writer.writerows(noun)
+            to_csv(nouns, 'data/wurzburg/nouns_d.csv')
+            to_csv(adjectives, 'data/wurzburg/adjectives_d.csv')
 
 
     """

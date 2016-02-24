@@ -19,16 +19,26 @@ class PartOfSpeech(object):
         """
         self.form_analyses.append(form_analysis)
 
-    def get_loci_as_list(self):
+    def to_csv(self):
         result = []
         for fa in self.form_analyses:
             for f in fa.forms:
                 for l in f.loci:
-                    result.append([self.headword, self.definition,
-                                   fa.gender if isinstance(self, Noun) else None, fa.stem, fa.case,
-                                   f.form,
-                                   l.short_str(), str(l.nr_occurrences), l.alternative])
+                    r = [self.headword, self.definition, self.additional]
+                    r.extend(fa.get_grammatical_info())
+                    r.extend([f.form, l.short_str(), str(l.nr_occurrences), l.alternative])
+                    result.append(r)
         return result
+
+    def get_csv_header(self):
+        result = ['headword', 'definition', 'additional']
+        result.extend(self.get_csv_form_analysis_header())
+        result.extend(['form', 'locus', 'locus_amount', 'alternative'])
+        return result
+
+    @staticmethod
+    def get_csv_form_analysis_header():
+        return []
 
     def __str__(self):
         s = '{}: {}, add_info: {}, def: {}'.format(self.__class__.__name__, self.headword, self.additional, self.definition)
@@ -56,6 +66,10 @@ class Noun(PartOfSpeech):
             form_analysis.gender = self.common_gender
         super(Noun, self).add_form_analysis(form_analysis)
 
+    @staticmethod
+    def get_csv_form_analysis_header():
+        return ['gender', 'stem', 'case']
+
 
 class Adjective(PartOfSpeech):
     """
@@ -72,6 +86,10 @@ class Adjective(PartOfSpeech):
         if self.common_stem:
             form_analysis.stem = self.common_stem
         super(Adjective, self).add_form_analysis(form_analysis)
+
+    @staticmethod
+    def get_csv_form_analysis_header():
+        return ['stem', 'case']
 
 
 class Adverb(PartOfSpeech):
@@ -96,17 +114,27 @@ class Preposition(PartOfSpeech):
             form_analysis.case = self.common_case
         super(Preposition, self).add_form_analysis(form_analysis)
 
+    @staticmethod
+    def get_csv_form_analysis_header():
+        return []
+
 
 class Verb(PartOfSpeech):
     """
     A Verb does not contain any additional information, just a headword and a definition.
     """
+    @staticmethod
+    def get_csv_form_analysis_header():
+        return []
 
 
 class DefiniteArticle(PartOfSpeech):
     """
     A DefiniteArticle does not contain any additional information, just a headword and a definition.
     """
+    @staticmethod
+    def get_csv_form_analysis_header():
+        return []
 
 
 class FormAnalysis(object):
@@ -152,6 +180,22 @@ class FormAnalysis(object):
 
     def get_last_form(self):
         return self.forms[-1]
+
+    def get_grammatical_info(self):
+        if isinstance(self.parent, Noun):
+            return [self.gender, self.stem, self.case]
+        elif isinstance(self.parent, Adjective):
+            return [self.stem, self.case]
+        elif isinstance(self.parent, Verb):
+            return [self.stem, self.is_active, self.person,
+                    self.relative, self.pronominal_object, self.empathic_elements]
+        elif isinstance(self.parent, Preposition):
+            return [self.case, self.classifier, self.person,
+                    self.number, self.gender, self.empathic_elements]
+        elif isinstance(self.parent, DefiniteArticle):
+            return [self.case, self.person]
+        else:
+            return []
 
     def __str__(self):
         if isinstance(self.parent, Noun):
