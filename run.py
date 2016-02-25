@@ -1,6 +1,7 @@
 import codecs
 import glob
 import re
+import os
 
 from extractor.extractor import create_pos
 from extractor.verbextractor import create_verb, find_stem_class
@@ -17,84 +18,103 @@ NEW_GLOSS = re.compile(r"""
 
 
 def to_csv(posses, filename):
-    with open(filename, 'wb') as out_csv:
-        out_csv.write(u'\uFEFF'.encode('utf-8'))  # the UTF-8 BOM to hint Excel we are using that...
-        csv_writer = csv.writer(out_csv, delimiter=';')
+    if posses:
+        with open(filename, 'wb') as out_csv:
+            out_csv.write(u'\uFEFF'.encode('utf-8'))  # the UTF-8 BOM to hint Excel we are using that...
+            csv_writer = csv.writer(out_csv, delimiter=';')
 
-        csv_writer.writerow(posses[0].get_csv_header())
-        for pos in posses:
-            csv_writer.writerows(pos.to_csv())
+            csv_writer.writerow(posses[0].get_csv_header())
+            for pos in posses:
+                csv_writer.writerows(pos.to_csv())
 
 
-def extract_glosses(file):
+def get_csv_name(filename, kind):
+    return os.path.dirname(filename) + os.path.sep + kind + '_' + os.path.basename(filename)[-5:].replace('txt', 'csv')
+
+
+def extract_glosses(filename):
     glosses = []
     current_gloss = ''
-    for line in file:
-        line = line.strip().replace('&amp;', '&')  # truncate and fix XML escapes
-        if line:
-            if NEW_GLOSS.match(line):
-                # We reached the start of a new gloss; append the previous to the list
-                glosses.append(current_gloss)
-                current_gloss = ''
-            current_gloss += line + ' '
+    with codecs.open(filename) as in_file:
+        for line in in_file:
+            line = line.strip().replace('&amp;', '&')  # truncate and fix XML escapes
+            if line:
+                if NEW_GLOSS.match(line):
+                    # We reached the start of a new gloss; append the previous to the list
+                    glosses.append(current_gloss)
+                    current_gloss = ''
+                current_gloss += line + ' '
     glosses.append(current_gloss)
 
     return glosses
 
 if __name__ == "__main__":
     for f in glob.glob('data/wurzburg/part2_lexicon_d.txt'):
-        with codecs.open(f) as in_file:
-            nouns = []
-            adjectives = []
-            for gloss in extract_glosses(in_file):
-                # Check for prepositions
-                if 'Prep.' in gloss:
-                    continue
+        nouns = []
+        adjectives = []
+        verbs = []
+        adverbs = []
+        prepositions = []
 
-                if 'Def. art.' in gloss:
-                    continue
-
-                if 'Adj.' in gloss:
-                    continue
-
-                # Check for predicates
-                if 'Predic.' in gloss:
-                    continue
-
-                # Check for deponentia
-                if '(depon.)' in gloss:
-                    continue
-
-                if FORM_ANALYSES.search(gloss):
-                    print gloss
-                    try:
-                        pos = create_pos(gloss)
-                        if isinstance(pos, Noun):
-                            nouns.append(pos)
-                        elif isinstance(pos, Adjective):
-                            adjectives.append(pos)
-                    except ValueError as e:
-                        print e
-
-                # Check for verbs
+        for gloss in extract_glosses(f):
+            # Check for prepositions
+            if 'Prep.' in gloss:
                 """
-                stem, _, _ = find_stem_class(gloss)
-                if stem:
-                    print gloss
-                    try:
-                        verb = create_verb(gloss)
-                        print verb
-                    except ValueError as e:
-                        print e
-                    except IndexError as e:
-                        print e
-                    continue
+                print gloss
+                try:
+                    prepositions.append(create_preposition(gloss))
+                except ValueError as e:
+                    print e
+                except IndexError as e:
+                    print e
                 """
+                continue
 
+            if 'Def. art.' in gloss:
+                continue
+
+            if 'Adj.' in gloss:
+                continue
+
+            # Check for predicates
+            if 'Predic.' in gloss:
+                continue
+
+            # Check for deponentia
+            if '(depon.)' in gloss:
+                continue
+
+            if FORM_ANALYSES.search(gloss):
                 # print gloss
+                try:
+                    pos = create_pos(gloss)
+                    if isinstance(pos, Noun):
+                        nouns.append(pos)
+                    elif isinstance(pos, Adjective):
+                        adjectives.append(pos)
+                except ValueError as e:
+                    print e
 
-            to_csv(nouns, 'data/wurzburg/nouns_d.csv')
-            to_csv(adjectives, 'data/wurzburg/adjectives_d.csv')
+            # Check for verbs
+            stem, _, _ = find_stem_class(gloss)
+            if stem:
+                # print gloss
+                try:
+                    verb = create_verb(gloss)
+                    verbs.append(verb)
+                except ValueError as e:
+                    print e
+                except IndexError as e:
+                    print e
+                continue
+
+            # print gloss
+
+        to_csv(nouns, get_csv_name(f, 'nouns'))
+        to_csv(adjectives, get_csv_name(f, 'adjectives'))
+        to_csv(verbs, get_csv_name(f, 'verbs'))
+        to_csv(adverbs, get_csv_name(f, 'adverbs'))
+        to_csv(prepositions, get_csv_name(f, 'prepositions'))
 
 
     """

@@ -128,13 +128,13 @@ def create_form_analysis(s, current_verb, current_form_analysis=None):
         last_form = current_form_analysis.get_last_form()
         prev_locus = last_form.get_last_locus()
         try:
-            last_form.append_locus(extract_loci(post_ee, prev_locus)[0])
+            last_form.append_loci(extract_loci(post_ee, prev_locus)[0])
         except ValueError:
             print 'Error extracting loci of: {}'.format(post_ee)
     else:
         try:
             current_form_analysis.append_form(extract_forms(post_ee)[0])
-        except ValueError, IndexError:
+        except ValueError:
             print 'Error extracting forms of: {}'.format(post_ee)
     return current_form_analysis, is_new
 

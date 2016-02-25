@@ -125,7 +125,7 @@ class Verb(PartOfSpeech):
     """
     @staticmethod
     def get_csv_form_analysis_header():
-        return []
+        return ['voice', 'stem class', 'person', 'relative', 'pronominal object', 'empathic elements']
 
 
 class DefiniteArticle(PartOfSpeech):
@@ -187,8 +187,9 @@ class FormAnalysis(object):
         elif isinstance(self.parent, Adjective):
             return [self.stem, self.case]
         elif isinstance(self.parent, Verb):
-            return [self.stem, self.is_active, self.person,
-                    self.relative, self.pronominal_object, self.empathic_elements]
+            return ['active' if self.is_active else 'passive',
+                    self.stem, self.person, self.relative,
+                    self.pronominal_object, self.empathic_elements]
         elif isinstance(self.parent, Preposition):
             return [self.case, self.classifier, self.person,
                     self.number, self.gender, self.empathic_elements]
@@ -228,8 +229,8 @@ class Form(object):
     def set_loci(self, loci):
         self.loci = loci
 
-    def append_locus(self, locus):
-        self.loci.append(locus)
+    def append_loci(self, loci):
+        self.loci.extend(loci)
 
     def get_last_locus(self):
         if not self.loci:
