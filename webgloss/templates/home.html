@@ -1,3 +1,4 @@
+{% extends "base.html" %}
 {% block title %}Home{% endblock %}
 {% block header %}Home{% endblock %}
 {% set active_page = 'home' %}
@@ -8,7 +9,7 @@
 <form method="post" class="pure-form pure-form-stacked">
     <fieldset>
         <div class="pure-g">
-            <div class="pure-u-1">
+            <div class="pure-u-1-4">
                 <label for="pos">Part of Speech</label>
                 <select id="pos" name="pos">
                     <option value="adj">Adjective</option>
@@ -19,9 +20,9 @@
                     <option value="verb">Verb</option>
                 </select>
             </div>
-            <div class="pure-u-1">
+            <div class="pure-u-3-4">
                 <label for="gloss">Gloss</label>
-                <textarea id="gloss" name="gloss"></textarea>
+                <textarea id="gloss" name="gloss" rows="5" cols="40"></textarea>
             </div>
         </div>
         <input type="submit" class="pure-button pure-button-primary" value="Parse"/>
