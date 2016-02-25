@@ -1,4 +1,4 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 
 
 class PartOfSpeech(object):
@@ -20,6 +20,9 @@ class PartOfSpeech(object):
         self.form_analyses.append(form_analysis)
 
     def to_csv(self):
+        """
+        Returns the PartOfSpeech as a list of Loci for output to .csv-format
+        """
         result = []
         for fa in self.form_analyses:
             for f in fa.forms:
@@ -31,13 +34,20 @@ class PartOfSpeech(object):
         return result
 
     def get_csv_header(self):
+        """
+        Returns the header for the .csv-output
+        """
         result = ['headword', 'definition', 'additional']
         result.extend(self.get_csv_form_analysis_header())
         result.extend(['form', 'locus', 'locus_amount', 'alternative'])
         return result
 
     @staticmethod
+    @abstractmethod
     def get_csv_form_analysis_header():
+        """
+        Allows every PartOfSpeech to have a custom header on the FormAnalysis level.
+        """
         return []
 
     def __str__(self):
@@ -96,6 +106,9 @@ class Adverb(PartOfSpeech):
     """
     An Adverb does not contain any additional information, just a headword and a definition.
     """
+    @staticmethod
+    def get_csv_form_analysis_header():
+        return []
 
 
 class Preposition(PartOfSpeech):
@@ -134,7 +147,7 @@ class DefiniteArticle(PartOfSpeech):
     """
     @staticmethod
     def get_csv_form_analysis_header():
-        return []
+        return ['case', 'person']
 
 
 class FormAnalysis(object):
