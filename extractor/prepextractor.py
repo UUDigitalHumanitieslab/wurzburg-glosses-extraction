@@ -7,6 +7,7 @@ from .regexes import match_regex, PREP_HEADWORD, PREP_PARTS, PREP_FORMS, PREP_CL
 
 ACC_CASE = 'accus.'
 DAT_CASE = 'dat.'
+GEN_CASE = 'gen.'
 SINGULAR = 'sg'
 RELATIVE_CLASSIFIER = 'rel. pron.'
 ARTICLE_CLASSIFIER = 'def. art.'
@@ -42,6 +43,8 @@ def extract_preposition(s):
         common_case = ACC_CASE
     elif 'dat.' in s:
         common_case = DAT_CASE
+    elif 'gen.' in s:
+        common_case = GEN_CASE
 
     headword = PREP_HEADWORD.match(s).group(1)
 

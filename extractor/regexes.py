@@ -103,11 +103,11 @@ PREP_HEADWORD = re.compile(r"""
     (?:\d\s)?               # matches an optional number
     (.*?)                   # matches anything (lazily)
     (?:\s\(.*?\))?          # matches anything between brackets, optionally
-    \sPrep\.                # matches 'Prep.'
+    \s?Prep\.               # matches 'Prep.'
 """, re.X)
 
 PREP_PARTS = re.compile(r"""
-    \s[A-Z]\.\s             # matches a capital letter
+    <b>[A-Z]\.\s</b>        # matches a capital letter in bold tags
 """, re.X)
 
 PREP_FORMS = re.compile(r"""

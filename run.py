@@ -5,7 +5,7 @@ import os
 
 from extractor.extractor import create_pos
 from extractor.verbextractor import create_verb, find_stem_class
-from extractor.regexes import FORM_ANALYSES, ADV_HEADWORD, SPLIT_EXAMPLES
+from extractor.regexes import FORM_ANALYSES, ADV_HEADWORD, PREP_HEADWORD, SPLIT_EXAMPLES
 from extractor.prepextractor import create_preposition
 from extractor.advextractor import create_adverb
 from extractor.models import Noun, Adjective
@@ -60,50 +60,40 @@ if __name__ == "__main__":
         verbs = []
         adverbs = []
         prepositions = []
+        not_processed = []
 
         for gloss in extract_glosses(f):
             # Check for prepositions
-            if 'Prep.' in gloss:
-                """
-                print gloss
+            if PREP_HEADWORD.match(gloss):
+                # TODO: Skip prepositions that are also conjunctions
+                if 'Prep. & conjn.' in gloss:
+                    not_processed.append(gloss)
+                    continue
+                # TODO: Skip some hard prepositions
+                if gloss.startswith('<b>1 ar</b>') or gloss.startswith('<b>2 de</b>') or gloss.startswith('<b>-dib-</b>'):
+                    not_processed.append(gloss)
+                    continue
+
                 try:
+                    # print gloss
                     prepositions.append(create_preposition(gloss))
                 except ValueError as e:
                     print e
                 except IndexError as e:
                     print e
-                """
                 continue
-
-            if 'Def. art.' in gloss:
+            elif 'Def. art.' in gloss or 'Adj.' in gloss or 'Infix. pron.' in gloss \
+                    or 'Substantive Verb.' in gloss or 'Predic.' in gloss or '(depon.)' in gloss:
+                not_processed.append(gloss)
                 continue
-
-            if 'Adj.' in gloss:
-                continue
-
-            if 'Infix. pron.' in gloss:
-                continue
-
-            if 'Substantive Verb.' in gloss:
-                continue
-
-            # Check for predicates
-            if 'Predic.' in gloss:
-                continue
-
-            if ADV_HEADWORD.match(gloss):
+            elif ADV_HEADWORD.match(gloss):
                 try:
-                    print gloss
+                    # print gloss
                     adverbs.append(create_adverb(gloss))
                 except ValueError as e:
                     print gloss
                     print e
-
-            # Check for deponentia
-            if '(depon.)' in gloss:
-                continue
-
-            if FORM_ANALYSES.search(gloss):
+            elif FORM_ANALYSES.search(gloss):
                 #print gloss
                 try:
                     pos = create_pos(gloss)
@@ -113,25 +103,31 @@ if __name__ == "__main__":
                         adjectives.append(pos)
                 except ValueError as e:
                     print e
-
-            # Check for verbs
-            stem, _, _ = find_stem_class(gloss)
-            if stem:
-                #print gloss
-                try:
-                    verb = create_verb(gloss)
-                    verbs.append(verb)
-                except ValueError as e:
-                    print e
-                continue
-
-            # print gloss
+            else:
+                # Check for verbs
+                stem, _, _ = find_stem_class(gloss)
+                if stem:
+                    #print gloss
+                    try:
+                        verb = create_verb(gloss)
+                        verbs.append(verb)
+                    except ValueError as e:
+                        print e
+                    continue
+                else:
+                    not_processed.append(gloss)
 
         to_csv(nouns, get_csv_name(f, 'nouns'))
         to_csv(adjectives, get_csv_name(f, 'adjectives'))
         to_csv(verbs, get_csv_name(f, 'verbs'))
         to_csv(adverbs, get_csv_name(f, 'adverbs'))
         to_csv(prepositions, get_csv_name(f, 'prepositions'))
+
+        with codecs.open('data/wurzburg/not_processed_' + os.path.basename(f)[-5:], 'wb') as out_file:
+            for np in not_processed:
+                out_file.write(np)
+                out_file.write('\n\n')
+
 
 
     """

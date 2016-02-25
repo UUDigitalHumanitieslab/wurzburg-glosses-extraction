@@ -78,7 +78,7 @@ def create_form_analysis(s, current_verb, current_form_analysis=None):
         current_form_analysis = FormAnalysis(current_verb, is_active=is_active, stem=stem)
         is_new = True
     elif not current_form_analysis:
-        if s.startswith('cf.'):
+        if s.startswith('s.') or s.startswith('cf.'):
             print 'Skipping reference to ' + s
         else:
             raise ValueError('No stem class found in: ' + s)
