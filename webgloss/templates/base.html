@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="//code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript" charset="utf8" src="//code.highcharts.com/modules/drilldown.js"></script>
+    <title>{% block title %}{% endblock %} - webgloss</title>
+    {% endblock %}
+</head>
+<body>
+<div class="pure-g">
+<div class="pure-u-1-8"></div>
+    <div id="layout" class="pure-u-3-4">
+        {% set navigation_bar = [
+            ('.home', 'home', 'Home'),
+        ] -%}
+        {% set active_page = active_page|default('home') -%}
+        <div class="pure-menu pure-menu-horizontal">
+            <a class="pure-menu-heading" href="#">Menu</a>
+
+            <ul class="pure-menu-list">
+                {% for href, id, caption in navigation_bar %}
+                <li class="pure-menu-item {% if id == active_page %} pure-menu-selected {% endif%}">
+                    <a href="{{ url_for(href) }}" class="pure-menu-link">{{ caption }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="main">
+            <div class="header">
+                <h1>webgloss</h1>
+                <h2>{% block header %}{% endblock %}</h2>
+            </div>
+
+            <div class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash">
+                {% for category, message in messages %}
+                <p class="{{ category }}">{{ message | safe }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    <div class="pure-u-1-8"></div>
+</div>
+</body>
+</html>
