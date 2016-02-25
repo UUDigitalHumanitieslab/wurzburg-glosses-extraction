@@ -49,7 +49,7 @@ def extract_glosses(filename):
     return glosses
 
 if __name__ == "__main__":
-    for f in glob.glob('data/wurzburg/part2_lexicon_d.txt'):
+    for f in glob.glob('data/wurzburg/part2_lexicon_[a-d].txt'):
         nouns = []
         adjectives = []
         verbs = []
@@ -76,6 +76,12 @@ if __name__ == "__main__":
             if 'Adj.' in gloss:
                 continue
 
+            if 'Infix. pron.' in gloss:
+                continue
+
+            if 'Substantive Verb.' in gloss:
+                continue
+
             # Check for predicates
             if 'Predic.' in gloss:
                 continue
@@ -85,7 +91,7 @@ if __name__ == "__main__":
                 continue
 
             if FORM_ANALYSES.search(gloss):
-                # print gloss
+                print gloss
                 try:
                     pos = create_pos(gloss)
                     if isinstance(pos, Noun):
@@ -98,13 +104,11 @@ if __name__ == "__main__":
             # Check for verbs
             stem, _, _ = find_stem_class(gloss)
             if stem:
-                # print gloss
+                print gloss
                 try:
                     verb = create_verb(gloss)
                     verbs.append(verb)
                 except ValueError as e:
-                    print e
-                except IndexError as e:
                     print e
                 continue
 

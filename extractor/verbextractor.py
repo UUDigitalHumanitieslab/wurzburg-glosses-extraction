@@ -78,7 +78,10 @@ def create_form_analysis(s, current_verb, current_form_analysis=None):
         current_form_analysis = FormAnalysis(current_verb, is_active=is_active, stem=stem)
         is_new = True
     elif not current_form_analysis:
-        raise ValueError('No stem class found in: ' + s)
+        if s.startswith('cf.'):
+            print 'Skipping reference to ' + s
+        else:
+            raise ValueError('No stem class found in: ' + s)
 
     person, post_person = match_regex(post_stem, VERB_PERSON)
     if person:
@@ -125,15 +128,19 @@ def create_form_analysis(s, current_verb, current_form_analysis=None):
         current_form_analysis.empathic_elements = empathic_elements
 
     if LOCUS.match(post_ee):
-        last_form = current_form_analysis.get_last_form()
-        prev_locus = last_form.get_last_locus()
         try:
+            last_form = current_form_analysis.get_last_form()
+            prev_locus = last_form.get_last_locus()
             last_form.append_loci(extract_loci(post_ee, prev_locus)[0])
         except ValueError:
             print 'Error extracting loci of: {}'.format(post_ee)
+        except IndexError:
+            print 'Error extracting loci of: {}'.format(post_ee)
     else:
         try:
-            current_form_analysis.append_form(extract_forms(post_ee)[0])
+            forms = extract_forms(post_ee)
+            if forms:
+                current_form_analysis.append_form(extract_forms(post_ee)[0])
         except ValueError:
             print 'Error extracting forms of: {}'.format(post_ee)
     return current_form_analysis, is_new

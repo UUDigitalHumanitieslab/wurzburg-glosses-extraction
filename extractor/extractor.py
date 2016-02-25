@@ -33,6 +33,8 @@ def extract_pos(s):
     """
     # Capture the headword, gender and stem
     match = POS_ANALYSIS.match(s)
+    if not match:
+        raise ValueError('This is not a Noun/Adjective')
     headword = match.group(1).strip()
     gender = match.group(2)  # for Nouns
     stem = match.group(3)  # for both Adjectives and Nouns
@@ -63,12 +65,21 @@ def extract_forms(s):
     """
     forms = []
     while s:
+        # Don't include references to other glosses
+        if s.startswith('s.') or s.startswith('cf.'):
+            break
+
         match = LOCUS.search(s)
         if match:
-            form = Form(s[:match.start(0)].strip())
-            loci, s = extract_loci(s[match.start(0):])
-            form.set_loci(loci)
-            forms.append(form)
+            f = s[:match.start(0)].strip()
+            # Don't include examples if there's already forms listed
+            if forms and f.startswith('.i.'):
+                break
+            else:
+                form = Form(f)
+                loci, s = extract_loci(s[match.start(0):])
+                form.set_loci(loci)
+                forms.append(form)
         else:
             print 'No loci for form "{}", is this correct?'.format(s)
             break

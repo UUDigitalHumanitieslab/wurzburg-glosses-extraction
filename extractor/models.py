@@ -196,9 +196,9 @@ class FormAnalysis(object):
 
     def get_grammatical_info(self):
         if isinstance(self.parent, Noun):
-            return [self.gender, self.stem, self.case]
+            return [self.gender, self.stem if hasattr(self, 'stem') else None, self.case]
         elif isinstance(self.parent, Adjective):
-            return [self.stem, self.case]
+            return [self.stem if hasattr(self, 'stem') else None, self.case]
         elif isinstance(self.parent, Verb):
             return ['active' if self.is_active else 'passive',
                     self.stem, self.person, self.relative,
