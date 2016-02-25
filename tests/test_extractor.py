@@ -55,6 +55,7 @@ class TestExtractor(unittest.TestCase):
             '29b19, Asg. diabul 23d8, 26a23, 28b30, <i>diab</i>ol 22d11, Gsg. ' \
             '<i>diab</i>uil 3b11'
         noun = create_pos(s)
+        self.assertTrue(isinstance(noun, Noun))
         self.assertEqual(noun.headword, 'díabul')
         self.assertEqual(noun.common_gender, 'm')
         self.assertEqual(noun.common_stem, 'o')
@@ -75,3 +76,22 @@ class TestExtractor(unittest.TestCase):
         self.assertEqual(len(noun.form_analyses[1].forms), 2)
         self.assertEqual(noun.form_analyses[1].forms[1].form, '<i>diab</i>ol')
         self.assertEqual(str(noun.form_analyses[1].forms[0].loci[1]), str(Locus(26, 'a', 23)))
+
+        s = '<b>debuith </b>f. i (vn. of di-taa), <i>Discord</i>, <i>strife</i>, <i>quarrel</i>, <i>disputation</i>. ' \
+            'Nsg. <i>debuith </i>10a8, 28b25, <i>debuid </i>31d19, Asg. <i>debuid </i>30b26, Dpl. <i>debthib </i>6b6'
+        noun = create_pos(s)
+        self.assertTrue(isinstance(noun, Noun))
+        self.assertEqual(noun.additional, 'vn. of di-taa')
+        self.assertEqual(noun.form_analyses[0].stem, 'i')
+
+        s = '<b>abgitir </b>m. f. ? i, originally <i>The letters of the alphabet</i>, Lat. abecedarium. Nsg. ' \
+            '<i>abgitir crabaith </i>33c13, Apl. <i>apgitri </i>19d12, Dpl. <i>apgitrib </i>19d5.'
+        noun = create_pos(s)
+        self.assertTrue(isinstance(noun, Noun))
+        self.assertEqual(noun.headword, 'abgitir')
+        self.assertEqual(noun.definition, '? i, originally The letters of the alphabet, Lat. abecedarium.')
+
+        s = '<b>abstanit </b>f. (Lat. abstinentia), <i>Abstinence </i>(from food or drink). Nsg. <i>abstanit </i>' \
+            '6b17, 6c15'
+        adjective = create_pos(s)
+        # self.assertTrue(isinstance(adjective, Adjective))

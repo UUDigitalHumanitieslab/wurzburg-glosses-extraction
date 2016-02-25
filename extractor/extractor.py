@@ -35,8 +35,6 @@ def extract_pos(s):
     gender = match.group(2)  # for Nouns
     stem = match.group(3)  # for both Adjectives and Nouns
     add_def = match.group(4).strip()
-    additional = None
-    definition = None
 
     if stem:
         stem = stem.strip()
@@ -50,6 +48,9 @@ def extract_pos(s):
     if match:
         additional = match.group(1)
         definition = remove_html_tags(match.group(2))
+    else:
+        additional = None
+        definition = remove_html_tags(add_def)
 
     cls = Noun if gender else Adjective
     return cls(headword, definition, additional=additional, common_stem=stem, common_gender=gender)

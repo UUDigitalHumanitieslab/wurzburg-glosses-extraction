@@ -45,10 +45,6 @@ def extract_glosses(filename):
                     current_gloss = ''
                 current_gloss += line + ' '
 
-    match = SPLIT_EXAMPLES.match(current_gloss)
-    if match:
-        current_gloss = match.group(1)
-
     glosses.append(current_gloss)
 
     return glosses
@@ -63,6 +59,10 @@ if __name__ == "__main__":
         not_processed = []
 
         for gloss in extract_glosses(f):
+            match = SPLIT_EXAMPLES.match(gloss)
+            if match:
+                gloss = match.group(1)
+
             # Check for prepositions
             if PREP_HEADWORD.match(gloss):
                 # TODO: Skip prepositions that are also conjunctions

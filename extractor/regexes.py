@@ -5,15 +5,15 @@ REMOVE_HTML_TAGS = re.compile(r"""
 """, re.X)
 
 POS_ANALYSIS = re.compile(r"""
-    <b>(.*)<\/b>            # matches the headword (between bold tags)
+    <b>(.*)</b>             # matches the headword (between bold tags)
     (?:\[?([nmf])\.\s)?     # matches the gender (optionally)
-    (?:(.*?)\]?[\.,<])      # matches the stem class
+    (?:(.*?),?\s)           # matches the stem class
     (.*?)$                  # matches anything until the end of the string
 """, re.X)
 
 POS_DEFINITION = re.compile(r"""
-    (?:\((.*)\)\s)?         # matches the additional info between brackets (optionally)
-    <i>(.*)<\/i>.?\.?       # matches the definition between italic tags
+    (?:\((.*)\),?\s)?       # matches the additional info between brackets (optionally)
+    <i>(.*)</i>.?\.?        # matches the definition between italic tags
 """, re.X)
 
 FORM_ANALYSES = re.compile(r"""
