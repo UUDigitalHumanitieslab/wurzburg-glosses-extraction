@@ -1,5 +1,5 @@
 from .models import Noun, Adjective, FormAnalysis, Form, Locus
-from .regexes import remove_html_tags, SPLIT_EXAMPLES, POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, LOCUS
+from .regexes import remove_html_tags, POS_ANALYSIS, POS_DEFINITION, FORM_ANALYSES, LOCUS
 
 
 def create_pos(s):
@@ -7,10 +7,6 @@ def create_pos(s):
     Creates a PartOfSpeech (of given class cls) from a string s.
     A PartOfSpeech consists of one or more FormAnalyses.
     """
-    match = SPLIT_EXAMPLES.match(s)
-    if match:
-        s = match.group(1)
-
     pos = None
     current_form_analysis = None
     splits = FORM_ANALYSES.split(s)

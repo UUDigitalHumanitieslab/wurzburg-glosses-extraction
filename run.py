@@ -5,7 +5,7 @@ import os
 
 from extractor.extractor import create_pos
 from extractor.verbextractor import create_verb, find_stem_class
-from extractor.regexes import FORM_ANALYSES
+from extractor.regexes import FORM_ANALYSES, ADV_HEADWORD, SPLIT_EXAMPLES
 from extractor.prepextractor import create_preposition
 from extractor.advextractor import create_adverb
 from extractor.models import Noun, Adjective
@@ -44,6 +44,11 @@ def extract_glosses(filename):
                     glosses.append(current_gloss)
                     current_gloss = ''
                 current_gloss += line + ' '
+
+    match = SPLIT_EXAMPLES.match(current_gloss)
+    if match:
+        current_gloss = match.group(1)
+
     glosses.append(current_gloss)
 
     return glosses
@@ -86,12 +91,20 @@ if __name__ == "__main__":
             if 'Predic.' in gloss:
                 continue
 
+            if ADV_HEADWORD.match(gloss):
+                try:
+                    print gloss
+                    adverbs.append(create_adverb(gloss))
+                except ValueError as e:
+                    print gloss
+                    print e
+
             # Check for deponentia
             if '(depon.)' in gloss:
                 continue
 
             if FORM_ANALYSES.search(gloss):
-                print gloss
+                #print gloss
                 try:
                     pos = create_pos(gloss)
                     if isinstance(pos, Noun):
@@ -104,7 +117,7 @@ if __name__ == "__main__":
             # Check for verbs
             stem, _, _ = find_stem_class(gloss)
             if stem:
-                print gloss
+                #print gloss
                 try:
                     verb = create_verb(gloss)
                     verbs.append(verb)

@@ -96,7 +96,7 @@ ADV_HEADWORD = re.compile(r"""
     (?:\(.*?\))?            # matches anything between parentheses
     (?:[,;]\s)?             # matches "[;,]" (optionally)
     ((lit\.\s)?             # matches "lit." (optionally)
-    .*?)\.                  # matches anything (lazily) before a dot
+    .*?)(\.|$)              # matches anything (lazily) before a dot or the end of the sentence
 """, re.X)
 
 PREP_HEADWORD = re.compile(r"""
