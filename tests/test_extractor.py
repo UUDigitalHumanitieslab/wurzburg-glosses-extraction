@@ -47,7 +47,7 @@ class TestExtractor(unittest.TestCase):
         noun = extract_pos(s)
         self.assertEqual(noun.headword, 'dochumacht')
         self.assertEqual(noun.common_stem, 'i?')
-        self.assertIsNone(noun.additional)
+        self.assertEqual(noun.additional, '')
         self.assertEqual(noun.definition, 'Difficult, impossible, \'hardly possible')
 
     def test_create_pos(self):

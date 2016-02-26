@@ -7,9 +7,13 @@ from .regexes import remove_html_tags, SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDIT
     VERB_CONJUNCTION, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCUS, match_regex
 
 
-VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Imperf. Indic.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
-                     'Past Subj.', 'Pret.', 'Pret. & Perf.', 'Pret. and Perf.',
-                     'Perf.', 'Perfect.', 'Perfect. Pres. Subj.', 'Perfect. Past Subj.', 'Imperat.']
+VERB_STEM_CLASSES = ['Pres. Ind.', 'Pres. Subj.',
+                     'Past Subj.',
+                     'Imperat.',
+                     'Fut.', 'Sec. Fut.',
+                     'Pret.', 'Pret. & Perf.', 'Pret. and Perf.', '(Pret. &) Perf.', 'Perf.',
+                     'Perfect.', 'Perfect. Pres. Subj.', 'Perfect. Pres. Ind.', 'Perfect. Past Subj.',
+                     'Imperf.', 'Imperf. Ind.', 'Imperf. Indic.']
 
 
 def create_verb(s):
@@ -148,17 +152,18 @@ def create_form_analysis(s, current_verb, current_form_analysis=None):
 
 def find_stem_class(s):
     """
-    Finds the first (and longest) occurrence of a verb stem class in a string s.
+    Finds the first (and longest in case of ties) occurrence of a verb stem class in a string s.
     """
     stem = None
     min_index = len(s)
     max_length = 0
     for stem_class in VERB_STEM_CLASSES:
         found = s.find(stem_class)
-        if found != -1 and found <= min_index and len(stem_class) > max_length:
-            stem = stem_class
-            min_index = found
-            max_length = len(stem_class)
+        if found != -1:
+            if found < min_index or (found == min_index and len(stem_class) > max_length):
+                stem = stem_class
+                min_index = found
+                max_length = len(stem_class)
 
     # If we didn't find any stem class, return the complete string.
     if min_index == len(s):
