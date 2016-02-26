@@ -6,14 +6,15 @@ REMOVE_HTML_TAGS = re.compile(r"""
 
 POS_ANALYSIS = re.compile(r"""
     <b>(.*)</b>             # matches the headword (between bold tags)
+    \)?                     # optionally matches an ending parenthesis
     (?:\[?([nmf])\.\s)?     # matches the gender (optionally)
-    (?:(.*?),?\s)           # matches the stem class
+    (?:([^\(]*?),?\s)       # matches the stem class
     (.*?)$                  # matches anything until the end of the string
 """, re.X)
 
 POS_DEFINITION = re.compile(r"""
-    (?:\((.*)\),?\s)?       # matches the additional info between brackets (optionally)
-    <i>(.*)</i>.?\.?        # matches the definition between italic tags
+    (?:\((.*)\),?\s?)?       # matches the additional info between brackets (optionally)
+    (?:<i>(.*)</i>.?\.?)?   # matches the definition between italic tags (optionally)
 """, re.X)
 
 FORM_ANALYSES = re.compile(r"""
@@ -155,4 +156,7 @@ def remove_html_tags(s):
     """
     Removes HTML tags from a string and trims the result.
     """
-    return REMOVE_HTML_TAGS.sub('', s).strip()
+    if not s:
+        return ''
+    else:
+        return REMOVE_HTML_TAGS.sub('', s).strip()

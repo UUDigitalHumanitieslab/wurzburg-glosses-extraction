@@ -31,7 +31,7 @@ def extract_pos(s):
     match = POS_ANALYSIS.match(s)
     if not match:
         raise ValueError('This is not a Noun/Adjective')
-    headword = match.group(1).strip()
+    headword = remove_html_tags(match.group(1).strip())
     gender = match.group(2)  # for Nouns
     stem = match.group(3)  # for both Adjectives and Nouns
     add_def = match.group(4).strip()
@@ -45,8 +45,8 @@ def extract_pos(s):
 
     # Split the additional information from the definition
     match = POS_DEFINITION.match(add_def)
-    if match:
-        additional = match.group(1)
+    if match and (match.group(1) or match.group(2)):
+        additional = remove_html_tags(match.group(1))
         definition = remove_html_tags(match.group(2))
     else:
         additional = None
