@@ -34,7 +34,8 @@ LOCUS = re.compile(r"""
 
 SPLIT_EXAMPLES = re.compile(r"""
     (.*?)                   # matches anything lazily
-    (\.\s\(?<b>([a-zA-Z]|IV|V?I{0,3})\.?\s?<\/b> # matches start of examples marked by a letter or Roman numeral in bold
+    ([\.:]\s                # matches '[.:] '
+    \(?<b>([a-zA-Z]|IV|V?I{0,3})\.?\s?</b> # matches start of examples marked by a letter or Roman numeral in bold
     |[:;]\s\.[\.i]\.)          # matches start of examples marked by "[:;] .[.i]."
 """, re.X)
 

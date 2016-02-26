@@ -7,9 +7,9 @@ from .regexes import remove_html_tags, SPLIT_EXAMPLES, VERB_HEADWORD, VERB_ADDIT
     VERB_CONJUNCTION, VERB_RELATIVE, VERB_VOICE, VERB_PRONOMINAL_OBJECT, VERB_EMPHATIC_ELEMENTS, LOCUS, match_regex
 
 
-VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
-                     'Past Subj.', 'Pret.', 'Perf.', 'Pret. & Perf.', 'Perfect. Pres. Subj.',
-                     'Perfect. Past Subj.', 'Imperat.']
+VERB_STEM_CLASSES = ['Pres. Ind.', 'Imperf.', 'Imperf. Ind.', 'Imperf. Indic.', 'Fut.', 'Sec. Fut.', 'Pres. Subj.',
+                     'Past Subj.', 'Pret.', 'Pret. & Perf.', 'Pret. and Perf.',
+                     'Perf.', 'Perfect.', 'Perfect. Pres. Subj.', 'Perfect. Past Subj.', 'Imperat.']
 
 
 def create_verb(s):
