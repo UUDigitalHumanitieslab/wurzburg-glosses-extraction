@@ -73,14 +73,15 @@ if __name__ == "__main__":
                 if gloss.startswith('<b>1 ar</b>') or gloss.startswith('<b>2 de</b>') or gloss.startswith('<b>-dib-</b>'):
                     not_processed.append(gloss)
                     continue
-
                 try:
                     # print gloss
                     prepositions.append(create_preposition(gloss))
                 except ValueError as e:
                     print e
+                    not_processed.append(gloss)
                 except IndexError as e:
                     print e
+                    not_processed.append(gloss)
                 continue
             elif 'Def. art.' in gloss or 'Adj.' in gloss or 'Infix. pron.' in gloss \
                     or 'Substantive Verb.' in gloss or 'Predic.' in gloss:
@@ -93,6 +94,7 @@ if __name__ == "__main__":
                 except ValueError as e:
                     print gloss
                     print e
+                    not_processed.append(gloss)
             elif FORM_ANALYSES.search(gloss):
                 #print gloss
                 try:
@@ -103,6 +105,7 @@ if __name__ == "__main__":
                         adjectives.append(pos)
                 except ValueError as e:
                     print e
+                    not_processed.append(gloss)
             else:
                 # Check for verbs
                 stem, _, _ = find_stem_class(gloss)
@@ -113,7 +116,7 @@ if __name__ == "__main__":
                         verbs.append(verb)
                     except ValueError as e:
                         print e
-                    continue
+                        not_processed.append(gloss)
                 else:
                     not_processed.append(gloss)
 
@@ -127,8 +130,6 @@ if __name__ == "__main__":
             for np in not_processed:
                 out_file.write(np)
                 out_file.write('\n\n')
-
-
 
     """
     with codecs.open('data/nouns.txt', 'rb') as in_file:
