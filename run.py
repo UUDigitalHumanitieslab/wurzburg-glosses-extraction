@@ -83,7 +83,7 @@ if __name__ == "__main__":
                     print e
                 continue
             elif 'Def. art.' in gloss or 'Adj.' in gloss or 'Infix. pron.' in gloss \
-                    or 'Substantive Verb.' in gloss or 'Predic.' in gloss or '(depon.)' in gloss:
+                    or 'Substantive Verb.' in gloss or 'Predic.' in gloss:
                 not_processed.append(gloss)
                 continue
             elif ADV_HEADWORD.match(gloss):

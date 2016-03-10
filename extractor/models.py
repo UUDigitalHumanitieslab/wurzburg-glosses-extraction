@@ -134,7 +134,7 @@ class Preposition(PartOfSpeech):
 
 class Verb(PartOfSpeech):
     """
-    A Verb does not contain any additional information, just a headword and a definition.
+    A Verb has some extra attributes on FormAnalysis.
     """
     @staticmethod
     def get_csv_form_analysis_header():

@@ -40,8 +40,9 @@ SPLIT_EXAMPLES = re.compile(r"""
 """, re.X)
 
 VERB_HEADWORD = re.compile(r"""
-    <b>(.*)<\/b>            # matches the headword (between bold tags)
-    (?:<i>(.*)<\/i>)?       # matches the definition (between italic tags) (optionally)
+    <b>(.*)</b>             # matches the headword (between bold tags)
+    (?:\((.*?)\),\s)?       # matches additional information between brackets (optionally)
+    (?:<i>(.*)</i>)?        # matches the definition (between italic tags) (optionally)
 """, re.X)
 
 VERB_ADDITIONAL_STEM = re.compile(r"""

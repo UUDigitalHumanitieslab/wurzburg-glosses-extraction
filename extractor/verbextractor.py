@@ -45,18 +45,21 @@ def find_verb(s):
         # If we find a stem class, check whether there is a passive annotation
         verb_string, _ = match_voice(pre_stem)
 
-        # Extract headword and definition
+        # Extract headword, additional information and definition
+        additional = None
         definition = None
         match = VERB_HEADWORD.match(verb_string)
         if match:
             headword = remove_html_tags(match.group(1))
             if match.group(2):
-                definition = remove_html_tags(match.group(2))
+                additional = remove_html_tags(match.group(2))
+            if match.group(3):
+                definition = remove_html_tags(match.group(3))
         else:
             headword = verb_string
 
         # Create the verb
-        verb = Verb(headword, definition)
+        verb = Verb(headword, definition, additional=additional)
         post_verb = s[len(verb_string):].lstrip()
         return verb, post_verb
     else:
