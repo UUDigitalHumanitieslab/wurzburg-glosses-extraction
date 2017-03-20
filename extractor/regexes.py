@@ -77,10 +77,12 @@ VERB_PRONOMINAL_OBJECT = re.compile(r"""
     (?:elision\sof\s)?              # matches "elision of" (optionally)
     (?:proleptic\s)?                # matches "proleptic" (optionally)
     (?:(?:in|suf)fix|anaph)\.\s     # matches "infix/suffix." or "anaph."
+    (?:[1-3](?:sg|pl)\.\s)?         # matches person and number (optionally)
     pron\.\s                        # matches "pron."
     (?:[1-3](?:sg|pl)\.\s)?         # matches person and number (optionally)
     (?:[nmf]\.\s)?                  # matches gender (optionally)
-    (?:\(elided\)\s)?)              # matches "elided" (optionally)
+    (?:\(elided\)\s)?               # matches "(elided)" (optionally)
+    (?:\(reflex\.\)\s)?)            # matches "(reflex.)" (optionally)
 """, re.X)
 
 VERB_EMPHATIC_ELEMENTS = re.compile(r"""
