@@ -50,7 +50,7 @@ def extract_glosses(filename):
     return glosses
 
 if __name__ == "__main__":
-    for f in glob.glob('data/wurzburg/part2_lexicon_[a-d].txt'):
+    for f in glob.glob('data/wurzburg/part2_lexicon_[a-z].txt'):
         nouns = []
         adjectives = []
         verbs = []
@@ -75,12 +75,13 @@ if __name__ == "__main__":
                     continue
 
                 try:
-                    # print gloss
                     prepositions.append(create_preposition(gloss))
                 except ValueError as e:
                     print e
+                    not_processed.append(gloss)
                 except IndexError as e:
                     print e
+                    not_processed.append(gloss)
                 continue
             elif 'Def. art.' in gloss or 'Adj.' in gloss or 'Infix. pron.' in gloss \
                     or 'Substantive Verb.' in gloss or 'Predic.' in gloss or '(depon.)' in gloss:
@@ -88,13 +89,11 @@ if __name__ == "__main__":
                 continue
             elif ADV_HEADWORD.match(gloss):
                 try:
-                    # print gloss
                     adverbs.append(create_adverb(gloss))
                 except ValueError as e:
-                    print gloss
                     print e
+                    not_processed.append(gloss)
             elif FORM_ANALYSES.search(gloss):
-                #print gloss
                 try:
                     pos = create_pos(gloss)
                     if isinstance(pos, Noun):
@@ -103,16 +102,17 @@ if __name__ == "__main__":
                         adjectives.append(pos)
                 except ValueError as e:
                     print e
+                    not_processed.append(gloss)
             else:
                 # Check for verbs
                 stem, _, _ = find_stem_class(gloss)
                 if stem:
-                    #print gloss
                     try:
                         verb = create_verb(gloss)
                         verbs.append(verb)
                     except ValueError as e:
                         print e
+                        not_processed.append(gloss)
                     continue
                 else:
                     not_processed.append(gloss)
@@ -127,8 +127,6 @@ if __name__ == "__main__":
             for np in not_processed:
                 out_file.write(np)
                 out_file.write('\n\n')
-
-
 
     """
     with codecs.open('data/nouns.txt', 'rb') as in_file:
