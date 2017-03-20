@@ -20,8 +20,8 @@ class TestExtractor(unittest.TestCase):
         loci, post_loci = extract_loci(s)
         self.assertEqual(len(loci), 3)
         self.assertEqual(str(loci[0]), str(Locus(11, 'b', 6, 'a')))
-        self.assertEqual(str(loci[1]), str(Locus(11, 'b', 7, '', 'quatter')))
-        self.assertEqual(str(loci[2]), str(Locus(11, 'b', 8, 'b', 'ter')))
+        self.assertEqual(str(loci[1]), str(Locus(11, 'b', 7, nr_occurrences='quatter')))
+        self.assertEqual(str(loci[2]), str(Locus(11, 'b', 8, 'b', nr_occurrences='ter')))
         self.assertEqual(loci[2].nr_occurrences, 3)
 
         with self.assertRaises(ValueError):
@@ -32,8 +32,16 @@ class TestExtractor(unittest.TestCase):
         loci, post_loci = extract_loci(s)
         self.assertEqual(len(loci), 3)
         self.assertEqual(str(loci[0]), str(Locus(30, 'b', 2)))
-        self.assertEqual(str(loci[1]), str(Locus(33, 'b', 8, '', '', '= 33a15, ZCP XVII, 224')))
+        self.assertEqual(str(loci[1]), str(Locus(33, 'b', 8, alternative='= 33a15, ZCP XVII, 224')))
         self.assertEqual(str(loci[2]), str(Locus(34, 'c', 3)))
+
+        s = '5a17, 8a5 (bis; second ex. MS <i>aimm</i>), 9c29, 26a5 (bis)'
+        loci, post_loci = extract_loci(s)
+        self.assertEqual(len(loci), 4)
+        self.assertEqual(str(loci[0]), str(Locus(5, 'a', 17)))
+        self.assertEqual(str(loci[1]), str(Locus(8, 'a', 5, alternative='bis; second ex. MS <i>aimm</i>')))
+        self.assertEqual(str(loci[2]), str(Locus(9, 'c', 29)))
+        self.assertEqual(str(loci[3]), str(Locus(26, 'a', 5, nr_occurrences='bis')))
 
     def test_extract_forms(self):
         s = 'andechor 13c26 (bis), dechur 12c43, 13c26 (ter), 33c10'

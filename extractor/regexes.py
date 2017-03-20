@@ -27,7 +27,7 @@ LOCUS = re.compile(r"""
     (\d*)                   # matches the number
     ([a-d]?)                # matches the subdivision (optionally)
     (?:\s\((\w+)\))?        # matches the nr_occurrences (optionally)
-    (?:\s\((.*)\))?         # matches alternative locus between brackets (optionally)
+    (?:\s\((.*?)\))?        # matches alternative locus between brackets (optionally)
     (?:\s*[,;\.]\s*|$)      # matches the end of the locus
 """, re.X)
 
