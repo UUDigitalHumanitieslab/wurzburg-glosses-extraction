@@ -11,6 +11,9 @@ def create_adverb(s):
         post_definition = s[match.end(2) + 2:].lstrip()
 
         # Special case when no definition is given, but only forms/loci
+        if not definition:
+            post_definition = s[match.end(1) + 2:].lstrip()
+            definition = ''
         if not post_definition and definition[0].islower():
             post_definition = definition
             definition = ''
