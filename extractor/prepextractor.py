@@ -5,6 +5,7 @@ from .extractor import extract_forms
 from .models import Preposition, FormAnalysis
 from .regexes import match_regex, PREP_HEADWORD, PREP_PARTS, PREP_FORMS, PREP_CLASSIFIER, PREP_PNG, PREP_EMPH_PRON
 
+NO_CASE = '?'
 ACC_CASE = 'accus.'
 DAT_CASE = 'dat.'
 GEN_CASE = 'gen.'
@@ -39,7 +40,9 @@ def create_preposition(s):
 
 
 def extract_preposition(s):
-    if 'accus.' in s or 'acc.' in s:
+    common_case = NO_CASE
+
+    if 'accus' in s or 'acc.' in s:
         common_case = ACC_CASE
     elif 'dat.' in s:
         common_case = DAT_CASE
