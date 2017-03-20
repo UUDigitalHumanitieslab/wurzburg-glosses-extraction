@@ -107,3 +107,20 @@ class TestVerbExtractor(unittest.TestCase):
         self.assertEqual(fa4.relative, 'with rel. n')
         self.assertIsNone(fa5.relative)
         self.assertEqual(fa5.pronominal_object, 'with infix. pron. 2pl.')
+
+        s = '<b>do-airbir </b>Pass.: Pres. Ind. (vel Pres. Subj.) 3sg. with infix. ' \
+            'pron. 1sg. <i>nimtharberar</i>9c31, 3pl. <i>doairbertar </i>22c10, with ' \
+            'rel. n <i>donairber</i>(<i>ta</i>)<i>r </i>25c23, Imperat. (vel Pres. Ind.) ' \
+            '3pl. <i>tairbertar </i>25c23.'
+        verb = create_verb(s)
+        self.assertEqual(verb.headword, 'do-airbir')
+        self.assertEqual(len(verb.form_analyses), 4)
+
+        fa1 = verb.form_analyses[0]
+        fa2 = verb.form_analyses[1]
+        fa3 = verb.form_analyses[2]
+        fa4 = verb.form_analyses[3]
+        self.assertEqual(fa1.stem, 'Pres. Ind. (vel Pres. Subj.)')
+        self.assertEqual(fa2.stem, 'Pres. Ind. (vel Pres. Subj.)')
+        self.assertEqual(fa3.stem, 'Pres. Ind. (vel Pres. Subj.)')
+        self.assertEqual(fa4.stem, 'Imperat. (vel Pres. Ind.)')

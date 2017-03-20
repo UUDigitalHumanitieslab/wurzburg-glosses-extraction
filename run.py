@@ -73,7 +73,6 @@ if __name__ == "__main__":
                 if gloss.startswith('<b>1 ar</b>') or gloss.startswith('<b>2 de</b>') or gloss.startswith('<b>-dib-</b>'):
                     not_processed.append(gloss)
                     continue
-
                 try:
                     prepositions.append(create_preposition(gloss))
                 except ValueError as e:
@@ -84,7 +83,7 @@ if __name__ == "__main__":
                     not_processed.append(gloss)
                 continue
             elif 'Def. art.' in gloss or 'Adj.' in gloss or 'Infix. pron.' in gloss \
-                    or 'Substantive Verb.' in gloss or 'Predic.' in gloss or '(depon.)' in gloss:
+                    or 'Substantive Verb.' in gloss or 'Predic.' in gloss:
                 not_processed.append(gloss)
                 continue
             elif ADV_HEADWORD.match(gloss):
@@ -113,7 +112,6 @@ if __name__ == "__main__":
                     except ValueError as e:
                         print e
                         not_processed.append(gloss)
-                    continue
                 else:
                     not_processed.append(gloss)
 

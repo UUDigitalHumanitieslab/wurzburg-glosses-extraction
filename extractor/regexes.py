@@ -6,14 +6,15 @@ REMOVE_HTML_TAGS = re.compile(r"""
 
 POS_ANALYSIS = re.compile(r"""
     <b>(.*)</b>             # matches the headword (between bold tags)
+    \)?                     # optionally matches an ending parenthesis
     (?:\[?([nmf])\.\s)?     # matches the gender (optionally)
-    (?:(.*?),?\s)           # matches the stem class
+    (?:([^\(]*?),?\s)       # matches the stem class
     (.*?)$                  # matches anything until the end of the string
 """, re.X)
 
 POS_DEFINITION = re.compile(r"""
-    (?:\((.*)\),?\s)?       # matches the additional info between brackets (optionally)
-    <i>(.*)</i>.?\.?        # matches the definition between italic tags
+    (?:\((.*)\),?\s?)?       # matches the additional info between brackets (optionally)
+    (?:<i>(.*)</i>.?\.?)?   # matches the definition between italic tags (optionally)
 """, re.X)
 
 FORM_ANALYSES = re.compile(r"""
@@ -33,13 +34,15 @@ LOCUS = re.compile(r"""
 
 SPLIT_EXAMPLES = re.compile(r"""
     (.*?)                   # matches anything lazily
-    (\.\s\(?<b>([a-zA-Z]|IV|V?I{0,3})\.?\s?<\/b> # matches start of examples marked by a letter or Roman numeral in bold
+    ([\.:]\s                # matches '[.:] '
+    \(?<b>([a-zA-Z]|IV|V?I{0,3})\.?\s?</b> # matches start of examples marked by a letter or Roman numeral in bold
     |[:;]\s\.[\.i]\.)          # matches start of examples marked by "[:;] .[.i]."
 """, re.X)
 
 VERB_HEADWORD = re.compile(r"""
-    <b>(.*)<\/b>            # matches the headword (between bold tags)
-    (?:<i>(.*)<\/i>)?       # matches the definition (between italic tags) (optionally)
+    <b>(.*)</b>             # matches the headword (between bold tags)
+    (?:\((.*?)\),\s)?       # matches additional information between brackets (optionally)
+    (?:<i>(.*)</i>)?        # matches the definition (between italic tags) (optionally)
 """, re.X)
 
 VERB_ADDITIONAL_STEM = re.compile(r"""
@@ -155,4 +158,7 @@ def remove_html_tags(s):
     """
     Removes HTML tags from a string and trims the result.
     """
-    return REMOVE_HTML_TAGS.sub('', s).strip()
+    if not s:
+        return ''
+    else:
+        return REMOVE_HTML_TAGS.sub('', s).strip()
