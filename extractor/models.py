@@ -258,7 +258,7 @@ class Form(object):
 
 
 class Locus(object):
-    OCCURRENCES_MAP = {'': 1, 'bis': 2, 'ter': 3, 'quater': 4, 'quatter': 4}
+    OCCURRENCES_MAP = {'': 1, 'bis': 2, 'ter': 3, 'quater': 4, 'quatter': 4, 'quinquiens': 5}
 
     def __init__(self, page, column, number, subdivision='', nr_occurrences='', alternative=''):
         self.page = page
