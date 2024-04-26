@@ -1,0 +1,32 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Würzburg glosses extraction
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Martijn
+    name-particle: van der
+    family-names: Klis
+  - email: cdh@uu.nl
+    name: >-
+      Research Software Lab, Centre for Digital Humanities,
+      Utrecht University
+    city: Utrecht
+    website: >-
+      https://cdh.uu.nl/centre-for-digital-humanities/research-software-lab/
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.11072623
+repository-code: >-
+  https://github.com/UUDigitalHumanitieslab/wurzburg-glosses-extraction
+abstract: >-
+  Extracts lemmata, forms and loci from the Würzburg glosses
+  lexicon (Kavanagh 2001).
+license: BSD-3-Clause
+commit: 52df050
+version: '1.0'
+date-released: '2024-04-26'
